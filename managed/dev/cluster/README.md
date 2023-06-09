@@ -31,4 +31,4 @@ Please make sure you have appropriate role and account number specified in `file
 
 run ```kubectl apply -f files/aws-load-balancer-controller-service-account.yaml```
 
-run ```helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=tetra-tech-dev-eks --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller```
+run ```helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=demo-cluster-dev-eks --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller```

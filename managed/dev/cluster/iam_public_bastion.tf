@@ -57,7 +57,7 @@ resource "aws_iam_policy" "public_bastion_eks_policy" {
           "eks:*",
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:eks:us-east-1:138904756338:cluster/tetra-tech-dev-eks"
+        Resource = "arn:aws:eks:us-east-1:138904756338:cluster/demo-cluster-dev-eks"
       },
     ]
   })

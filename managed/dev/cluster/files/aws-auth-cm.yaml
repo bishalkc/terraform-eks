@@ -4,6 +4,6 @@ data:
     - groups:
       - system:bootstrappers
       - system:nodes
-      rolearn: arn:aws:iam::138904756338:role/role-worker-tetra-tech-dev
+      rolearn: arn:aws:iam::138904756338:role/role-worker-demo-cluster-dev
       username: system:node:{{EC2PrivateDNSName}}
 
