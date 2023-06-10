@@ -1,16 +1,72 @@
 ### This repo bootstraps AWS cloud with EKS cluster
 
-- creates vpc 
-- creates bastion host
-- creates eks cluster and supporting roles and infra
-- creates databases (if needed )
+#### Supported types of Cluster
+- [x] EKS Managed
+- [ ] EKS Fargate
+
+### What it does
+- [x] creates vpc 
+- [x] creates bastion host
+- [x] creates eks cluster and supporting roles and infra
+- [x] creates databases <!--- optional --->
 
 ### infra setup order
-- run `terraform init` and `terraform apply` on common folder
-- run `terraform init` and `terraform apply` on eks folder
-- run `terraform` on database folder // IF neeeded
+```shell 
+git clone https://github.com/bishalkc/terraform-eks.git
+```
+**VPC**
+```shell 
+cd common
+```
+```shell 
+terraform init
+``` 
+```shell 
+terraform apply
+```
 
-### Clean up 
-- run ```terraform destroy``` on database folder // if provisioned
-- run ```terraform destroy``` on eks folder
-- run ```terraform destroy``` on common folder
+**CLUSTER**
+```shell 
+cd cluster
+```
+```shell 
+terraform init
+``` 
+```shell 
+terraform apply
+```
+
+**DATABASE** <!--- If needed --->
+```shell 
+cd database
+```
+```shell 
+terraform init
+``` 
+```shell 
+terraform apply
+```
+
+
+### Clean up
+**DATABASE** <!--- If provisioned --->
+```shell 
+cd database
+```
+```shell 
+terraform destroy
+```
+**CLUSTER**
+```shell 
+cd cluster
+```
+```shell 
+terraform destroy
+```
+**VPC/COMMON**
+```shell 
+cd database
+```
+```shell 
+terraform destroy
+```
