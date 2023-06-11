@@ -4,6 +4,10 @@ terraform {
     archive = {
       source = "hashicorp/archive"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "3.1.0"
+    }
   }
 }
 
@@ -16,3 +20,4 @@ provider "aws" {
     }
   }
 }
+

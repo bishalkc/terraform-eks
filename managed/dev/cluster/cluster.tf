@@ -3,7 +3,6 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
   load_config_file       = false
-  version                = "~> 1.10"
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -29,7 +28,7 @@ resource "aws_eks_cluster" "eks" {
     subnet_ids              = data.terraform_remote_state.common.outputs.cp
     endpoint_private_access = true
     endpoint_public_access  = true
-    public_access_cidrs     = ["96.255.96.189/32"] # Bishal.KC
+    public_access_cidrs     = ["${local.my_ip}/32"]
   }
 
   encryption_config {

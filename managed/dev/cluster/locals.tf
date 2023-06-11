@@ -9,6 +9,10 @@ data "tls_certificate" "oidc" {
   url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 locals {
   project        = "demo-cluster"
   environment    = "dev"
@@ -16,6 +20,7 @@ locals {
   aws_region     = data.aws_region.current.name
   account_id     = data.aws_caller_identity.current.account_id
   account_number = data.aws_caller_identity.current.account_id
+  my_ip = chomp(data.http.myip.response_body)
 
   //VPC related
   vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
@@ -46,8 +51,8 @@ locals {
       name    = "aws-ebs-csi-driver"
       version = "v1.19.0-eksbuild.2"
     }
-    version   = "1.27"
-    instance_type = "t3.micro"
+    version       = "1.27"
+    instance_type = "t3.medium"
     volume_size   = 20
     volume_type   = "gp3"
   }
@@ -57,3 +62,5 @@ locals {
   }
 
 }
+
+

@@ -6,8 +6,9 @@
 - creates databases (if needed )
 
 ### infra setup order
+- create a bucket named `demo-cluster-terraform-state`
 - run `terraform init` and `terraform apply` on common folder
-- run `terraform init` and `terraform apply` on eks folder
+- run `terraform init` and `terraform apply` on cluster folder
 - run `terraform` on database folder // IF neeeded
 
 ### Clean up 

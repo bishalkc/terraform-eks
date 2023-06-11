@@ -28,7 +28,7 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   lifecycle {
-    ignore_changes = [scaling_config[0].desired_size, launch_template[0].version ] #, launch_template[0].version
+    ignore_changes = [scaling_config[0].desired_size] #, launch_template[0].version
   }
 
   tags = {
