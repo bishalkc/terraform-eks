@@ -10,63 +10,46 @@
 - [x] creates eks cluster and supporting roles and infra
 - [x] creates databases <!--- optional --->
 
-### infra setup order
+### *Infra setup in order*
 ```shell 
 git clone https://github.com/bishalkc/terraform-eks.git
+cd terraform-eks
 ```
-**VPC**
+##### *VPC/COMMON*
 ```shell 
 cd common
-```
-```shell 
 terraform init
-``` 
-```shell 
 terraform apply
 ```
 
-**CLUSTER**
+##### *CLUSTER*
 ```shell 
 cd cluster
-```
-```shell 
 terraform init
-``` 
-```shell 
 terraform apply
 ```
 
-**DATABASE** <!--- If needed --->
+##### *DATABASE* <!--- If needed --->
 ```shell 
 cd database
-```
-```shell 
 terraform init
-``` 
-```shell 
 terraform apply
 ```
 
 
-### Clean up
-**DATABASE** <!--- If provisioned --->
+### *CLEAN UP*
+##### *DATABASE* <!--- If provisioned --->
 ```shell 
 cd database
-```
-```shell 
 terraform destroy
 ```
-**CLUSTER**
+##### *CLUSTER*
 ```shell 
 cd cluster
-```
-```shell 
 terraform destroy
 ```
-**VPC/COMMON**
+##### *VPC/COMMON*
 ```shell 
 cd database
-```
-```shell 
 terraform destroy
 ```

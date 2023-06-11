@@ -6,29 +6,39 @@ You will need to make for changes according to your liking.
 
 ## Terraform 
 
-1. run ```terraform init```
-2. run ```terraform apply```
+```shell 
+terraform init
+terraform apply
+```
 
 ### Post install config
 
 Make sure your cluster is up and running
 
 - configure your local environment to connect to cluster
-  run ```aws eks update-kubeconfig --name {clustername}```
+  ```shell 
+  aws eks update-kubeconfig --name demo-app-dev-eks
+  ```
 - make sure all system are optimal 
-  run ```kubectl get nodes```
-  run ```kubect get po -A```
+  ```
+  kubectl get nodes
+  kubect get po -A
+  ```
 
 ### POSTINSTALL NOTES:
 
 #### aws-auth refer [here](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html) for more details
-For example look at `files/aws-auth-cm.yaml`
+For example look at [files/aws-auth-cm.yaml](files/aws-auth-cm.yaml)
 
 #### LB Controller
 For setting up service account and installing aws-load-balancer-controller using helm:
 
-Please make sure you have appropriate role and account number specified in `files/aws-load-balancer-controller-service-account.yaml`
+Please make sure you have appropriate role and account number specified in [files/aws-load-balancer-controller-service-account.yaml](files/aws-load-balancer-controller-service-account.yaml)
 
-run ```kubectl apply -f files/aws-load-balancer-controller-service-account.yaml```
+```shell 
+kubectl apply -f files/aws-load-balancer-controller-service-account.yaml
+```
 
-run ```helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=demo-cluster-dev-eks --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller```
+```shell 
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=demo-cluster-dev-eks --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+```

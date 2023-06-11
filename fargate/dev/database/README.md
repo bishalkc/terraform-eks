@@ -6,5 +6,7 @@ You will need to make for changes according to your liking.
 
 ## Terraform 
 
-1. run ```terraform init```
-2. run ```terraform apply```
+```shell 
+terraform init
+terraform apply
+```
