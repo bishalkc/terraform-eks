@@ -2,12 +2,15 @@
 
 You will need to make for changes according to your liking. 
 1. Make appropriate changes according to your setup in `init.tf`
+2. Change `vars.tf` appropriately
 2. Change `local.tf` to reflect your values
 
 ## Terraform 
 
-1. run ```terraform init```
-2. run ```terraform apply```
+```shell 
+terraform init
+terraform apply
+```
 
 # Common Resources
 
@@ -57,7 +60,7 @@ worker   | 10.100.48.0/20  | 10.100.48.0 - 10.100.63.255 | 10.100.48.132 - 10.10
 
 - Public subnets can be utilized for anything we need public facing for now
 - Private subnets for EKS Cluster Control Plane is only for the ENI's that AWS provisions for EKS Control Plane.
-- Private subnets for Database are to be utilized for RDS postgres or any other RDS database type we may need..
+- Private subnets for Database are to be utilized for RDS 
 - Private subnets for Appliances/Services related EC2 instances (or other components).
 - Private subnets for EKS worker nodes is only to provision the worker nodes in appropriate subnets.
 - Further use of the network ranges within the VPC will be decided later as per need basis.
