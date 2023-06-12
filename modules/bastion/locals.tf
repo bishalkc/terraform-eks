@@ -26,14 +26,13 @@ data "aws_ami" "bastion_amazon_linux_2_latest" {
 }
 
 locals {
-  project                = var.project
-  environment            = var.environment
-  tenant                 = var.tenant
-  aws_region             = data.aws_region.current.name
-  account_id             = data.aws_caller_identity.current.account_id
-  account_number         = data.aws_caller_identity.current.account_id
-  create_bastion_public  = var.create_bastion_public
-  create_bastion_private = var.create_bastion_private
+  project        = var.project
+  environment    = var.environment
+  tenant         = var.tenant
+  aws_region     = data.aws_region.current.name
+  account_id     = data.aws_caller_identity.current.account_id
+  account_number = data.aws_caller_identity.current.account_id
+
   # VPC related
   vpc = {
     vpc_id         = var.vpc_id
@@ -53,8 +52,10 @@ locals {
   }
 
   bastion = {
-    instance_type = var.bastion_instance_type
-    eks_version   = var.eks_version
+    instance_type  = var.bastion_instance_type
+    eks_version    = var.eks_version
+    create_private = var.create_bastion_private
+    create_public  = var.create_bastion_public
   }
   eks = {
     cluster_name = "${lower(local.project)}-${lower(local.environment)}-eks"

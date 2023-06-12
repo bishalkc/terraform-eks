@@ -20,7 +20,8 @@ resource "aws_key_pair" "bastion" {
 # BASTION INSTANCE
 ################################################################################
 resource "aws_instance" "bastion_public" {
-  count                       = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
+
   ami                         = data.aws_ami.bastion_amazon_linux_2_latest.id
   associate_public_ip_address = true
   disable_api_termination     = false
@@ -50,6 +51,7 @@ resource "aws_instance" "bastion_public" {
     }
   }
 
+  depends_on = [aws_iam_role.public_bastion_role, aws_security_group.bastion_public]
   tags = {
     Name      = "${local.project}-${local.environment}"
     Host_Type = "static"
@@ -66,7 +68,7 @@ resource "aws_instance" "bastion_public" {
 # BASTION PUBLIC INSTANCE PROFILE
 ################################################################################
 resource "aws_iam_instance_profile" "public_bastion_ip" {
-  count = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
 
   name = "ip-public-${local.project}-${local.environment}"
   role = aws_iam_role.public_bastion_role[count.index].name
@@ -88,7 +90,7 @@ resource "aws_iam_instance_profile" "public_bastion_ip" {
 # BASTION PUBLIC ROLE
 ################################################################################
 resource "aws_iam_role" "public_bastion_role" {
-  count = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
 
   name               = "role-public-${local.project}-${local.environment}"
   assume_role_policy = <<POLICY
@@ -119,7 +121,7 @@ POLICY
 # BASTION EKS PUBLIC POLICY
 ################################################################################
 resource "aws_iam_policy" "public_bastion_eks_policy" {
-  count = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
 
   name        = "policy-public-${local.project}-${local.environment}-eks"
   path        = "/"
@@ -141,7 +143,7 @@ resource "aws_iam_policy" "public_bastion_eks_policy" {
 }
 
 resource "aws_iam_policy_attachment" "public_bastion_eks_policy_attachment" {
-  count = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
 
   name = "attachment-policy-public-${local.project}-${local.environment}-eks"
   roles = [
@@ -150,8 +152,26 @@ resource "aws_iam_policy_attachment" "public_bastion_eks_policy_attachment" {
   policy_arn = aws_iam_policy.public_bastion_eks_policy[count.index].arn
 }
 
+################################################################################
+# BASTION PUBLIC SECUTIRY GROUP
+################################################################################
+
+resource "aws_security_group" "bastion_public" {
+  count       = local.bastion.create_public ? 1 : 0
+  name        = "${local.project}-${local.environment}-public"
+  description = "Security Group for Bastion Host"
+  vpc_id      = local.vpc.vpc_id
+
+  tags = {
+    Name     = "sg-${local.project}-${local.environment}",
+    Tier     = "public"
+    Role     = "instance"
+    Resource = "security_group"
+  }
+}
+
 resource "aws_security_group_rule" "ingress_22_custom" {
-  count = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
 
   type              = "ingress"
   description       = "Custom IP"
@@ -160,11 +180,11 @@ resource "aws_security_group_rule" "ingress_22_custom" {
   protocol          = "tcp"
   cidr_blocks       = ["${local.my_ip}/32"]
   security_group_id = aws_security_group.bastion_public[count.index].id
-
+  depends_on        = [aws_security_group.bastion_public]
 }
 
 resource "aws_security_group_rule" "egress_all" {
-  count = local.create_bastion_public ? 1 : 0
+  count = local.bastion.create_public ? 1 : 0
 
   type              = "egress"
   description       = "All allowed"
@@ -173,14 +193,14 @@ resource "aws_security_group_rule" "egress_all" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.bastion_public[count.index].id
-
+  depends_on        = [aws_security_group.bastion_public]
 }
 
 ################################################################################
 # BASTION PRIVATE INSTANCE
 ################################################################################
 resource "aws_instance" "bastion_private" {
-  count                       = local.create_bastion_private ? 1 : 0
+  count                       = local.bastion.create_private ? 1 : 0
   ami                         = data.aws_ami.bastion_amazon_linux_2_latest.id
   associate_public_ip_address = false
   disable_api_termination     = false
@@ -196,7 +216,7 @@ resource "aws_instance" "bastion_private" {
     update = "15m"
     delete = "15m"
   }
-
+  depends_on = [aws_iam_role.private_bastion_role, aws_security_group.bastion_private]
   root_block_device {
     delete_on_termination = true
     encrypted             = true
@@ -228,7 +248,7 @@ resource "aws_instance" "bastion_private" {
 # BASTION PRIVATE INSTANCE PROFILE
 ################################################################################
 resource "aws_iam_instance_profile" "private_bastion_ip" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   name = "ip-private-${local.project}-${local.environment}"
   role = aws_iam_role.private_bastion_role[count.index].name
@@ -250,7 +270,7 @@ resource "aws_iam_instance_profile" "private_bastion_ip" {
 # BASTION PRIVATE INSTANCE ROLE
 ################################################################################
 resource "aws_iam_role" "private_bastion_role" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   name               = "role-private-${local.project}-${local.environment}"
   assume_role_policy = <<POLICY
@@ -281,7 +301,7 @@ POLICY
 # BASTION PRIVATE EKS POLICY
 ################################################################################
 resource "aws_iam_policy" "private_bastion_eks_policy" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   name        = "policy-private-${local.project}-${local.environment}-eks"
   path        = "/"
@@ -303,7 +323,7 @@ resource "aws_iam_policy" "private_bastion_eks_policy" {
 }
 
 resource "aws_iam_policy_attachment" "private_bastion_eks_policy_attachment" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   name = "attachment-policy-private-${local.project}-${local.environment}-eks"
   roles = [
@@ -312,24 +332,11 @@ resource "aws_iam_policy_attachment" "private_bastion_eks_policy_attachment" {
   policy_arn = aws_iam_policy.private_bastion_eks_policy[count.index].arn
 }
 
-resource "aws_security_group" "bastion_public" {
-  count       = local.create_bastion_private ? 1 : 0
-  name        = "${local.project}-${local.environment}-public"
-  description = "Security Group for Bastion Host"
-  vpc_id      = local.vpc.vpc_id
-
-  tags = {
-    Name     = "sg-${local.project}-${local.environment}",
-    Tier     = "public"
-    Role     = "instance"
-    Resource = "security_group"
-  }
-
-}
-
-
+################################################################################
+# BASTION PRIVATE SECUTIRY GROUP
+################################################################################
 resource "aws_security_group" "bastion_private" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   name        = "${local.project}-${local.environment}-private"
   description = "Security Group for Private Bastion Host"
@@ -345,7 +352,7 @@ resource "aws_security_group" "bastion_private" {
 }
 
 resource "aws_security_group_rule" "private_ingress_22_custom" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   type              = "ingress"
   description       = "Custom IP"
@@ -354,10 +361,11 @@ resource "aws_security_group_rule" "private_ingress_22_custom" {
   protocol          = "tcp"
   cidr_blocks       = ["${local.my_ip}/32"]
   security_group_id = aws_security_group.bastion_private[count.index].id
+  depends_on        = [aws_security_group.bastion_private]
 }
 
 resource "aws_security_group_rule" "private_egress_all" {
-  count = local.create_bastion_private ? 1 : 0
+  count = local.bastion.create_private ? 1 : 0
 
   type              = "egress"
   description       = "All allowed"
@@ -366,5 +374,5 @@ resource "aws_security_group_rule" "private_egress_all" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.bastion_private[count.index].id
-
+  depends_on        = [aws_security_group.bastion_private]
 }

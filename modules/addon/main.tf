@@ -2,7 +2,8 @@
 # CNI ADDON
 ################################################################################
 resource "aws_eks_addon" "cni" {
-  count                       = local.eks.ebs_addon.enabled ? 1 : 0
+  count = local.eks.cni_addon.enabled ? 1 : 0
+
   cluster_name                = local.eks.cluster_name
   addon_name                  = local.eks.cni_addon.name
   addon_version               = local.eks.cni_addon.version
@@ -22,6 +23,7 @@ resource "aws_eks_addon" "cni" {
 
 data "aws_iam_policy_document" "addon_cni_role_policy_document" {
   count = local.eks.cni_addon.enabled ? 1 : 0
+
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
@@ -56,7 +58,8 @@ resource "aws_iam_role" "addon_cni_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "addon_cni_role_policy_attachment" {
-  count      = local.eks.cni_addon.enabled ? 1 : 0
+  count = local.eks.cni_addon.enabled ? 1 : 0
+
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.addon_cni_role[count.index].name
 }
@@ -65,7 +68,8 @@ resource "aws_iam_role_policy_attachment" "addon_cni_role_policy_attachment" {
 # EBS ADDON
 ################################################################################
 resource "aws_eks_addon" "ebs" {
-  count                       = local.eks.ebs_addon.enabled ? 1 : 0
+  count = local.eks.ebs_addon.enabled ? 1 : 0
+
   cluster_name                = local.eks.cluster_name
   addon_name                  = local.eks.ebs_addon.name
   addon_version               = local.eks.ebs_addon.version
