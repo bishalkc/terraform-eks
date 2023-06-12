@@ -38,9 +38,9 @@ resource "aws_instance" "bastion_public" {
       Name      = "/dev/xvda-${local.project}-${local.environment}"
       Tier      = "primary"
       Encrypted = "true"
-      Role     = "volume"
-      Tier     = "private"
-      Resource = "ebs" 
+      Role      = "volume"
+      Tier      = "private"
+      Resource  = "ebs"
     }
   }
 
@@ -49,8 +49,8 @@ resource "aws_instance" "bastion_public" {
     Name      = "${local.project}-${local.environment}"
     Host_Type = "static"
     Tier      = "public"
-    Role     = "instance"
-    Resource = "ec2" 
+    Role      = "instance"
+    Resource  = "ec2"
   }
 
   #To get eks cluster config: aws eks update-kubeconfig --name ccp-sandbox-eks-1 --kubeconfig ~/.kube/config --region us-east-1

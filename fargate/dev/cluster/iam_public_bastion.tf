@@ -9,7 +9,7 @@ resource "aws_iam_instance_profile" "public_bastion_ip" {
 
   tags = {
     Name     = "ip-public-${local.project}-${local.environment}"
-    Tier      = "public"
+    Tier     = "public"
     Role     = "instance"
     Resource = "instance_profile"
   }
@@ -36,7 +36,7 @@ POLICY
 
   tags = {
     Name     = "role-public-${local.project}-${local.environment}"
-    Tier      = "public"
+    Tier     = "public"
     Role     = "instance"
     Resource = "iam_role"
   }

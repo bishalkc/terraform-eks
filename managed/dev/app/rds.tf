@@ -45,6 +45,6 @@ resource "aws_db_subnet_group" "rds_subnetgroup" {
 #     Name     = "rds-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
 #     Role     = "database"
 #     Tier     = "private"
-#     Resource = "rds" 
+#     Resource = "rds"
 #   }
 # }

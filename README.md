@@ -5,32 +5,32 @@
 - [ ] EKS Fargate
 
 ### What it does
-- [x] creates vpc 
+- [x] creates vpc
 - [x] creates bastion host
 - [x] creates eks cluster and supporting roles and infra
 - [x] creates databases <!--- optional --->
 
 ### *Infra setup in order*
-```shell 
+```shell
 git clone https://github.com/bishalkc/terraform-eks.git
 cd terraform-eks
 ```
 ##### *VPC/COMMON*
-```shell 
+```shell
 cd common
 terraform init
 terraform apply
 ```
 
 ##### *CLUSTER*
-```shell 
+```shell
 cd cluster
 terraform init
 terraform apply
 ```
 
 ##### *DATABASE* <!--- If needed --->
-```shell 
+```shell
 cd database
 terraform init
 terraform apply
@@ -39,17 +39,17 @@ terraform apply
 
 ### *CLEAN UP*
 ##### *DATABASE* <!--- If provisioned --->
-```shell 
+```shell
 cd database
 terraform destroy
 ```
 ##### *CLUSTER*
-```shell 
+```shell
 cd cluster
 terraform destroy
 ```
 ##### *VPC/COMMON*
-```shell 
+```shell
 cd database
 terraform destroy
 ```

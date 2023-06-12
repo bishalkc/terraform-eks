@@ -3,8 +3,8 @@ resource "aws_route_table" "private" {
 
   tags = {
     Name     = "private-route-table-${local.project}-${local.environment}"
-    Tier = "private"
-    Role = "route"
+    Tier     = "private"
+    Role     = "route"
     Resource = "route_table"
   }
 }

@@ -14,7 +14,7 @@ variable "az_count" {
 
 variable "public_subnet_cidr" {
   description = "CIDR block for public subnets"
-  default     = "/26" # 64 - 5 (AWS RESERVES) = 59 * 3 
+  default     = "/26" # 64 - 5 (AWS RESERVES) = 59 * 3
 }
 
 variable "database_subnet_cidr" {
@@ -36,4 +36,3 @@ variable "worker_subnet_cidr" {
   description = "CIDR block for worker subnets"
   default     = "/20" # 4096 - 5 (AWS RESERVES) = 4091 * 3
 }
-

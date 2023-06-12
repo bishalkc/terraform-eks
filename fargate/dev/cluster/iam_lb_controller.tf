@@ -39,7 +39,7 @@ resource "aws_iam_policy" "lb_controller_role_policy" {
   name        = "policy-oidc-lb-controller-${local.project}-${local.environment}"
   path        = "/"
   description = "Policy for EKS LoadBalancer Controller of EKS ${local.project} ${local.environment}"
-  policy      = file("../policies/eks_lb_controller_policy.json")
+  policy      = file("../../../modules/policies/eks_lb_controller_policy.json")
 
   tags = {
     Name     = "policy-oidc-lb-controller-${local.project}-${local.environment}"
@@ -58,4 +58,3 @@ resource "aws_iam_role_policy_attachment" "lb_controller_policy_attachment" {
     aws_iam_policy.lb_controller_role_policy,
   ]
 }
-

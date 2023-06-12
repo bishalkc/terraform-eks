@@ -11,8 +11,8 @@ resource "aws_eks_addon" "ebs" {
     update = "20m"
     delete = "20m"
   }
-  depends_on = [ aws_eks_node_group.node_group, aws_iam_role.addon_ebs_role ]
-  
+  depends_on = [aws_eks_node_group.node_group, aws_iam_role.addon_ebs_role]
+
   tags = {
     Name     = "${local.eks.ebs_addon.name}-${local.eks.ebs_addon.version}-${local.project}-${local.environment}"
     Tier     = "private"
@@ -67,13 +67,12 @@ resource "aws_iam_role_policy_attachment" "addon_ebs_role_servicerole_attachment
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   role       = aws_iam_role.addon_ebs_role.name
 }
-
-// CUSTOM KMS (if you are not using custom kms disable below)
+# CUSTOM KMS (if you are not using custom kms disable below)
 resource "aws_iam_policy" "ebs_kms_readwrite_policy" {
   name        = "policy-ebs-kms-readwrite-${local.project}-${local.environment}"
   path        = "/"
   description = "Policy for EBS KMS ${local.project} ${local.environment}"
-  policy      = file("../policies/kms_policy.json")
+  policy      = file("../../../modules/policies/kms_policy.json")
 
   tags = {
     Name     = "policy-ebs-kms-readwrite-${local.project}-${local.environment}"
@@ -93,7 +92,7 @@ resource "aws_iam_policy" "ebs_role_kms_grant_policy" {
   name        = "policy-ebs-kms-grant-${local.project}-${local.environment}"
   path        = "/"
   description = "Policy for EBS KMS ${local.project} ${local.environment}"
-  policy      = file("../policies/kms_grant_policy.json")
+  policy      = file("../../../modules/policies/kms_grant_policy.json")
 
   tags = {
     Name     = "policy-ebs-kms-grant-${local.project}-${local.environment}"

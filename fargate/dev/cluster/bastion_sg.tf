@@ -5,7 +5,7 @@ resource "aws_security_group" "bastion_public" {
 
   tags = {
     Name     = "sg-${local.project}-${local.environment}",
-    Tier      = "public"
+    Tier     = "public"
     Role     = "instance"
     Resource = "security_group"
   }

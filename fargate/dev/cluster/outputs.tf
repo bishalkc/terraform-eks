@@ -5,7 +5,7 @@ output "cloudwatch_loggroup_eks_arn" {
   value       = aws_cloudwatch_log_group.eks.arn
 }
 
-# ECR outputs 
+# ECR outputs
 
 output "ecr" {
   description = "ECR URL"
@@ -96,7 +96,7 @@ output "kms_alias_arn" {
 
 output "node_group_arn" {
   description = "ARN of EKS NodeGroup"
-  value = aws_eks_node_group.node_group[*].id
+  value       = aws_eks_node_group.node_group[*].id
 }
 
 output "node_group_id" {

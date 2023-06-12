@@ -3,7 +3,7 @@ resource "random_password" "rds_admin" {
   special     = false
   lower       = true
   upper       = true
-  number      = true
+  numeric     = true
   min_numeric = 4
   min_lower   = 4
   min_upper   = 4
@@ -34,7 +34,7 @@ resource "aws_db_instance" "rds_instance" {
   engine                    = local.db.type
   engine_version            = local.db.version
   instance_class            = local.db.instance_type
-  name                      = lower(local.project)
+  db_name                   = lower(local.project)
   final_snapshot_identifier = "rds-${local.db.type}-${lower(local.project)}-${lower(local.environment)}-final"
   username                  = lower(local.project)
   password                  = random_password.rds_admin.result
@@ -45,6 +45,6 @@ resource "aws_db_instance" "rds_instance" {
     Name     = "rds-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
     Role     = "database"
     Tier     = "private"
-    Resource = "rds" 
+    Resource = "rds"
   }
 }

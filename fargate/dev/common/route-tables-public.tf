@@ -10,7 +10,7 @@ resource "aws_route_table" "public" {
 }
 
 
-## ADD 2 more for production and actual clients 
+## ADD 2 more for production and actual clients
 
 # resource "aws_route_table" "public" {
 #   vpc_id = aws_vpc.vpc.id

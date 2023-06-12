@@ -17,21 +17,21 @@ locals {
   account_id     = data.aws_caller_identity.current.account_id
   account_number = data.aws_caller_identity.current.account_id
 
-  //VPC related
+  # VPC related
   vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
   vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
-  # //EKS Control Plane Subnets related
-  // Bastion public subnet 
+
+  # Bastion public subnet
   subnet_public = data.terraform_remote_state.common.outputs.public[0]
   # subnet_private_1_eks_cp_id = data.terraform_remote_state.common.outputs.subnet_private_1_eks_cp_id
   # subnet_private_2_eks_cp_id = data.terraform_remote_state.common.outputs.subnet_private_2_eks_cp_id
 
-  # //EKS Wrkr Node Subnets related
+
   # subnet_private_1_eks_wrkr_id = data.terraform_remote_state.common.outputs.subnet_private_1_eks_wrkr_id
   # subnet_private_2_eks_wrkr_id = data.terraform_remote_state.common.outputs.subnet_private_2_eks_wrkr_id
 
-  // APP: Backend IAM Role for Pod Service Account
+  # APP: Backend IAM Role for Pod Service Account
   # app_backend_iam_oidc_pods_1_arn  = data.terraform_remote_state.app_backend.outputs.iam_oidc_pods_1_arn
   bastion = {
     instance_type = "t3.micro"
@@ -46,7 +46,7 @@ locals {
       name    = "aws-ebs-csi-driver"
       version = "v1.19.0-eksbuild.2"
     }
-    version   = "1.27"
+    version       = "1.27"
     instance_type = "t3.micro"
     volume_size   = 20
     volume_type   = "gp3"
