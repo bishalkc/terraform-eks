@@ -5,13 +5,13 @@
 - creates eks cluster and supporting roles and infra
 - creates databases (if needed )
 
-### infra setup order
+### infrastructure setup order
 - create a bucket named `demo-cluster-terraform-state`
 - run `terraform init` and `terraform apply` on common folder
 - run `terraform init` and `terraform apply` on cluster folder
 - run `terraform` on database folder // IF neeeded
 
-### Clean up 
+### Clean up
 - run ```terraform destroy``` on database folder // if provisioned
 - run ```terraform destroy``` on eks folder
 - run ```terraform destroy``` on common folder
