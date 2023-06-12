@@ -30,14 +30,14 @@ locals {
   eks = {
     cluster_name = "${lower(local.project)}-${lower(local.environment)}-eks"
     cni_addon = {
-      addon_cni = true
-      version   = "v1.12.6-eksbuild.2"
-      name      = "vpc-cni"
+      enable  = true
+      version = "v1.12.6-eksbuild.2"
+      name    = "vpc-cni"
     }
     ebs_addon = {
-      name      = "aws-ebs-csi-driver"
-      version   = "v1.19.0-eksbuild.2"
-      addon_ebs = true
+      name    = "aws-ebs-csi-driver"
+      version = "v1.19.0-eksbuild.2"
+      enable  = true
     }
     version       = "1.27"
     instance_type = "t3.medium"
