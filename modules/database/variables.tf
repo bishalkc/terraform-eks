@@ -1,5 +1,5 @@
 ################################################################################
-# KMX
+# DATABASE
 ################################################################################
 variable "project" {
   description = "Project Name"
@@ -38,4 +38,16 @@ variable "db_instance_type" {
   description = "Define Database Instance Type"
   type        = string
   default     = "db.t3.medium"
+}
+variable "vpc_id" {
+  description = "Define VPC ID"
+  type        = string
+}
+variable "db_subnet_ids" {
+  description = "Define Database Subnets"
+  type        = list(string)
+}
+variable "sg_bastion_public_id" {
+  description = "Define Bastion SG ID"
+  type        = string
 }

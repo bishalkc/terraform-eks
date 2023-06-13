@@ -5,7 +5,8 @@ terraform {
       source = "hashicorp/archive"
     }
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
+      version = "5.2.0"
     }
   }
 }
