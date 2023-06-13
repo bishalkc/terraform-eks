@@ -19,6 +19,7 @@ resource "aws_db_parameter_group" "rds_paramgroup" {
   name        = "rds-pg-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
   family      = local.db.type
   description = "RDS param group for rds-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
+
 }
 
 ################################################################################
@@ -27,7 +28,9 @@ resource "aws_db_parameter_group" "rds_paramgroup" {
 resource "aws_db_subnet_group" "rds_subnetgroup" {
   name        = "rds-sbng-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
   description = "${local.db.type} DB subnet group for rds-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
-  subnet_ids  = data.terraform_remote_state.common.outputs.database
+  subnet_ids  = local.db.subnet_ids
+  depends_on  = [aws_security_group.rds]
+
 }
 
 ################################################################################
@@ -53,12 +56,14 @@ resource "aws_db_instance" "rds_instance" {
   db_subnet_group_name      = aws_db_subnet_group.rds_subnetgroup.id
   parameter_group_name      = aws_db_parameter_group.rds_paramgroup.id
   vpc_security_group_ids    = [aws_security_group.rds.id]
+  depends_on                = [aws_db_parameter_group.rds_paramgroup, random_password.rds_admin, rds_subnetgroup]
   tags = {
     Name     = "rds-${local.db.type}-${lower(local.project)}-${lower(local.environment)}"
     Role     = "database"
     Tier     = "private"
     Resource = "rds"
   }
+
 }
 ################################################################################
 # RDS SECURITY GROUP
@@ -85,6 +90,7 @@ resource "aws_security_group_rule" "ingress_3306_bastion" {
   protocol                 = "tcp"
   source_security_group_id = local.sg_bastion_public_id
   security_group_id        = aws_security_group.rds.id
+  depends_on               = [aws_security_group.rds]
 
 }
 
@@ -96,5 +102,6 @@ resource "aws_security_group_rule" "egress_all" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.rds.id
+  depends_on        = [aws_security_group.rds]
 
 }
