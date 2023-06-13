@@ -4,13 +4,11 @@ terraform {
     archive = {
       source = "hashicorp/archive"
     }
-    http = {
-      source  = "hashicorp/http"
-      version = "3.1.0"
+    aws = {
+      source = "hashicorp/aws"
     }
   }
 }
-
 provider "aws" {
   default_tags {
     tags = {
@@ -19,4 +17,6 @@ provider "aws" {
       Tenant      = local.tenant
     }
   }
+  alias  = "east"
+  region = "us-east-1"
 }

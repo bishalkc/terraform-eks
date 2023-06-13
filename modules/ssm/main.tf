@@ -1,31 +1,19 @@
 ################################################################################
 # SSM
 ################################################################################
-resource "aws_secretsmanager_secret" "database" {
-  count = local.secret_manager.database ? 1 : 0
-
-  name       = "${lower(local.project)}/${lower(local.environment)}/${lower(local.framework)}/database"
-  kms_key_id = local.kms_id
-
+resource "aws_ssm_parameter" "param" {
+  name        = "/${local.project}/${local.environment}/${local.framework}/${var.name}"
+  description = "${var.description}-${local.project}-${local.environment}"
+  type        = var.type
+  tier        = var.tier
+  data_type   = var.data_type
+  key_id      = var.key_id
+  value       = var.value
   tags = {
-    Name     = "secret-manager-${local.project}-${local.environment}-${lower(local.framework)}"
+    Name     = "ssm-${local.project}-${local.environment}-${lower(local.framework)}"
     Tier     = "private"
     Role     = "eks"
-    Resource = "secret_manager"
+    Resource = "param_store"
   }
-}
 
-
-resource "aws_secretsmanager_secret" "app" {
-  count = local.secret_manager.app ? 1 : 0
-
-  name       = "${lower(local.project)}/${lower(local.environment)}/${lower(local.framework)}/app"
-  kms_key_id = local.kms_id
-
-  tags = {
-    Name     = "secret-manager-${local.project}-${local.environment}-${lower(local.framework)}"
-    Tier     = "private"
-    Role     = "eks"
-    Resource = "secret_manager"
-  }
 }

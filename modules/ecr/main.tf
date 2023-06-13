@@ -2,6 +2,8 @@
 # ECR
 ################################################################################
 resource "aws_ecr_repository" "ecr" {
+  count = local.create_ecr ? 1 : 0
+
   name = "${local.project}-${local.environment}"
   image_scanning_configuration {
     scan_on_push = true
@@ -18,12 +20,16 @@ resource "aws_ecr_repository" "ecr" {
 # ECR POLICY
 ################################################################################
 resource "aws_ecr_repository_policy" "ecr" {
-  repository = aws_ecr_repository.ecr.name
+  count = local.create_ecr ? 1 : 0
+
+  repository = aws_ecr_repository.ecr[count.index].name
   policy     = file("../../../modules/policies/ecr_repository_policy.json")
 }
 
 resource "aws_ecr_lifecycle_policy" "ecr_lifecycle_policy" {
-  repository = aws_ecr_repository.ecr.name
+  count = local.create_ecr ? 1 : 0
+
+  repository = aws_ecr_repository.ecr[count.index].name
 
   policy = <<EOF
 {

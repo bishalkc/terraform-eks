@@ -1,11 +1,3 @@
-module "ecr" {
-  source = "../../../modules/ecr"
-
-  project     = local.project
-  environment = local.environment
-  tenant      = local.tenant
-}
-
 module "bastion" {
   source = "../../../modules/bastion"
 
@@ -23,15 +15,6 @@ module "bastion" {
 
 }
 
-module "kms" {
-  source = "../../../modules/kms"
-
-  project     = local.project
-  environment = local.environment
-  tenant      = local.tenant
-  create_kms  = local.kms.create_kms
-}
-
 module "eks" {
   source = "../../../modules/eks"
 
@@ -46,7 +29,7 @@ module "eks" {
   eks_volume_size   = local.eks.volume_size
   eks_volume_type   = local.eks.volume_type
 
-  # VPC Values 
+  # VPC Values
   vpc_id            = data.terraform_remote_state.vpc.outputs.vpc_id
   vpc_cidr_block    = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
   cp_subnet_ids     = data.terraform_remote_state.vpc.outputs.cp
@@ -59,6 +42,9 @@ module "eks" {
   bastion_keypair_name  = module.bastion.bastion_keypair_name
   bastion_public_sg_id  = local.bastion.create_public == true ? module.bastion.bastion_public_sg_id[0] : "null"
   bastion_private_sg_id = local.bastion.create_private == true ? module.bastion.bastion_private_sg_id[0] : "null"
+
+  # Enable LB Controller
+  lb_controller = true
 }
 
 module "addon" {
@@ -68,7 +54,7 @@ module "addon" {
   environment = local.environment
   tenant      = local.tenant
 
-  # ADDON 
+  # ADDON
   enable_cni = local.eks.cni_addon.enable
   enable_ebs = local.eks.ebs_addon.enable
 

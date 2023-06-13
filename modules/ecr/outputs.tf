@@ -1,6 +1,6 @@
 # ECR outputs
 
-output "ecr" {
+output "ecr_url" {
   description = "ECR URL"
-  value       = aws_ecr_repository.ecr.repository_url
+  value       = try(aws_ecr_repository.ecr[*].repository_url, null)
 }

@@ -6,18 +6,15 @@ data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-
-  project        = var.project
-  environment    = var.environment
-  tenant         = var.tenant
-  framework      = var.framework
+  project        = "demo-cluster"
+  environment    = "dev"
+  tenant         = "DC"
   aws_region     = data.aws_region.current.name
   account_id     = data.aws_caller_identity.current.account_id
   account_number = data.aws_caller_identity.current.account_id
-  secret_manager = {
-    database = var.create_secret_database
-    app      = var.create_secret_app
+
+  create = {
+    kms = true
+    ecr = true
   }
-  kms_id = var.kms_id
-  prefix = "v1"
 }

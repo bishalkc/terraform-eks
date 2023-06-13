@@ -33,3 +33,7 @@ variable "kms_id" {
   description = "KMS ID for encryption"
   type        = string
 }
+variable "secret_string" {
+  description = " Secrets to populate"
+  type        = map(string)
+}

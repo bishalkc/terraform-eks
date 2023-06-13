@@ -217,7 +217,7 @@ resource "aws_eks_node_group" "node_group" {
 }
 
 ################################################################################
-# NODEGROUP LAUNCH TEMPLATE 
+# NODEGROUP LAUNCH TEMPLATE
 ################################################################################
 
 ## NOTE: EKS Managed Worker Node is currently not compatible with defining Network Interface & IAM Profile Configurations in Launch Template and handles it via the Node Group Resource itself. 12/17/2021
