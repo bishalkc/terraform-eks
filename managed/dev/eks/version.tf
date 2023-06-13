@@ -7,6 +7,8 @@ terraform {
   }
 }
 provider "aws" {
+  version = "5.2.0"
+
   default_tags {
     tags = {
       Owner       = local.project

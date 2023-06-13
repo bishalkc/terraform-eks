@@ -17,14 +17,14 @@ cd terraform-eks
 ```
 ##### *VPC/COMMON*
 ```shell
-cd common
+cd vpc
 terraform init
 terraform apply
 ```
 
 ##### *CLUSTER*
 ```shell
-cd cluster
+cd eks
 terraform init
 terraform apply
 ```
@@ -45,11 +45,11 @@ terraform destroy
 ```
 ##### *CLUSTER*
 ```shell
-cd cluster
+cd eks
 terraform destroy
 ```
 ##### *VPC/COMMON*
 ```shell
-cd database
+cd vpc
 terraform destroy
 ```
