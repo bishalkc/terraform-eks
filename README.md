@@ -14,6 +14,7 @@
 ```shell
 git clone https://github.com/bishalkc/terraform-eks.git
 cd terraform-eks
+pre-commit install // make sure you have pre-commit installed
 ```
 ##### *VPC/COMMON*
 ```shell
@@ -36,8 +37,19 @@ terraform init
 terraform apply
 ```
 
+##### *APP* <!--- If needed --->
+```shell
+cd app
+terraform init
+terraform apply
+```
+
 
 ### *CLEAN UP*
+##### *APP* <!--- If provisioned --->
+```shell
+cd app
+terra
 ##### *DATABASE* <!--- If provisioned --->
 ```shell
 cd database
