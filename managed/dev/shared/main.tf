@@ -22,6 +22,5 @@ module "ecr" {
 
   project     = local.project
   environment = local.environment
-  tenant      = local.tenant
   create_ecr  = local.create.ecr
 }

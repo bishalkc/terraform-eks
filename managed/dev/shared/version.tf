@@ -17,6 +17,6 @@ provider "aws" {
       Tenant      = local.tenant
     }
   }
-  alias  = "east"
+  alias  = "default"
   region = "us-east-1"
 }
