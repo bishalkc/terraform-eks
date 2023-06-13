@@ -1,7 +1,7 @@
 module "kms" {
 
   providers = {
-    aws = aws.east
+    aws = aws.default
   }
 
   source = "../../../modules/kms"
@@ -15,8 +15,9 @@ module "kms" {
 module "ecr" {
 
   providers = {
-    aws = aws.east
+    aws = aws.default
   }
+
   source = "../../../modules/ecr"
 
   project     = local.project
