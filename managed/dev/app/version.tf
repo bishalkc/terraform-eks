@@ -16,7 +16,7 @@ provider "aws" {
       Framework   = local.framework
     }
   }
-  alias  = "east"
+  alias  = "default"
   region = "us-east-1"
 }
 

@@ -1,7 +1,7 @@
 module "secretmanager" {
   source = "../../../modules/secretmanager"
   providers = {
-    aws = aws.east
+    aws = aws.default
   }
   project     = local.project
   environment = local.environment
@@ -17,7 +17,7 @@ module "secretmanager" {
 module "ssm" {
   source = "../../../modules/ssm"
   providers = {
-    aws = aws.east
+    aws = aws.default
   }
   for_each = {
     "bkc"  = "www.bkc.com",
