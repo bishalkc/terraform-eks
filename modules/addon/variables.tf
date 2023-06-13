@@ -51,3 +51,7 @@ variable "aws_oidc_url" {
   description = "URL of OIDC"
   type        = string
 }
+variable "eks_cluster_name" {
+  description = "Name of the cluster"
+  type        = string
+}
