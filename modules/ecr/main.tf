@@ -23,7 +23,7 @@ resource "aws_ecr_repository_policy" "ecr" {
   count = local.create_ecr ? 1 : 0
 
   repository = aws_ecr_repository.ecr[count.index].name
-  policy     = file("../../../modules/policies/ecr_repository_policy.json")
+  policy     = file("${path.module}/policies/ecr_repository_policy.json")
 }
 
 resource "aws_ecr_lifecycle_policy" "ecr_lifecycle_policy" {

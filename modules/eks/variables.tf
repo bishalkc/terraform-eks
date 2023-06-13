@@ -6,11 +6,6 @@ variable "environment" {
   description = "Project Environment"
   type        = string
 }
-variable "tenant" {
-  description = "Project Tenant"
-  type        = string
-  default     = "demo"
-}
 variable "eks_version" {
   description = "Define EKS Version"
   type        = string

@@ -2,6 +2,10 @@
 module "vpc" {
   source = "../../../modules/vpc"
 
+  providers = {
+    aws = aws.east
+  }
+
   project              = local.project
   environment          = local.environment
   tenant               = local.tenant

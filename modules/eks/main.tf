@@ -1,11 +1,3 @@
-data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.eks.id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.eks.id
-}
-
 ################################################################################
 # EKS CLUSTER
 ################################################################################
@@ -100,7 +92,7 @@ resource "aws_iam_policy" "cluster_role_kms_readwrite_policy" {
   name        = "policy-eks-kms-readwrite-${local.project}-${local.environment}"
   path        = "/"
   description = "Policy for EKS KMS ${local.project} ${local.environment}"
-  policy      = file("../../../modules/policies/kms_policy.json")
+  policy      = file("${path.module}/policies/kms_policy.json")
 
   tags = {
     Name     = "policy-kms-readwrite-${local.project}-${local.environment}"
@@ -111,12 +103,12 @@ resource "aws_iam_policy" "cluster_role_kms_readwrite_policy" {
 
 }
 
-resource "aws_iam_role_policy_attachment" "cluster_role_AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "cluster_role_amazon_eks_cluster_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "cluster_role_AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "cluster_role_amazon_eks_vpc_resource_controller" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   role       = aws_iam_role.cluster_role.name
 }
@@ -156,17 +148,17 @@ POLICY
 
 }
 
-resource "aws_iam_role_policy_attachment" "worker_role_AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "worker_role_amazon_eks_worker_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.worker_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "worker_role_AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "worker_role_amazon_ec2_container_registry_readonly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.worker_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_readonly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.worker_role.name
 }
@@ -306,7 +298,7 @@ Content-Type: text/x-shellscript; charset="us-ascii"
 ################################################################################
 resource "aws_iam_openid_connect_provider" "oidc" {
 
-  url             = aws_eks_cluster.eks.identity.0.oidc.0.issuer
+  url             = aws_eks_cluster.eks.identity[0].oidc[0].issuer
   thumbprint_list = [data.tls_certificate.oidc.certificates[0].sha1_fingerprint]
   client_id_list = [
     "sts.amazonaws.com",
@@ -408,7 +400,7 @@ resource "aws_iam_policy" "lb_controller_role_policy" {
   name        = "policy-oidc-lb-controller-${local.project}-${local.environment}"
   path        = "/"
   description = "Policy for EKS LoadBalancer Controller of EKS ${local.project} ${local.environment}"
-  policy      = file("../../../modules/policies/eks_lb_controller_policy.json")
+  policy      = file("${path.module}/policies/eks_lb_controller_policy.json")
 
   tags = {
     Name     = "policy-oidc-lb-controller-${local.project}-${local.environment}"
@@ -419,7 +411,8 @@ resource "aws_iam_policy" "lb_controller_role_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "lb_controller_policy_attachment" {
-  count      = local.eks.lb_controller ? 1 : 0
+  count = local.eks.lb_controller ? 1 : 0
+
   policy_arn = aws_iam_policy.lb_controller_role_policy[count.index].arn
   role       = aws_iam_role.lb_controller_role[count.index].name
 

@@ -1,6 +1,10 @@
 module "bastion" {
   source = "../../../modules/bastion"
 
+  providers = {
+    aws = aws.east
+  }
+
   project                = local.project
   environment            = local.environment
   tenant                 = local.tenant
@@ -17,11 +21,15 @@ module "bastion" {
 
 module "eks" {
   source = "../../../modules/eks"
-
+  providers = {
+    aws        = aws.east
+    kubernetes = kubernetes
+    http       = http
+    tls        = tls
+  }
   # Default Values
   project     = local.project
   environment = local.environment
-  tenant      = local.tenant
 
   # EKS Values
   eks_version       = local.eks.version
@@ -36,7 +44,7 @@ module "eks" {
   worker_subnet_ids = data.terraform_remote_state.vpc.outputs.worker
 
   # KMS Key ARN
-  kms_key_arn = module.kms.kms_key_arn[0]
+  kms_key_arn = data.terraform_remote_state.shared.outputs.kms_alias_arn
 
   # Bastion Values
   bastion_keypair_name  = module.bastion.bastion_keypair_name

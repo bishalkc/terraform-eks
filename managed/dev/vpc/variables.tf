@@ -11,8 +11,9 @@ variable "availability_zones" {
 }
 
 variable "az_count" {
-  type    = number
-  default = 3
+  description = "AZ count declaration"
+  type        = number
+  default     = 3
 }
 
 variable "public_subnet_cidr" {

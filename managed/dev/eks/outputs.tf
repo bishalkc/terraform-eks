@@ -27,17 +27,17 @@ output "bastion_private_sg_arn" {
 
 output "kms_key_arn" {
   description = "ARN of EKS KMS"
-  value       = try(module.kms.kms_key_arn, null)
+  value       = try(data.terraform_remote_state.shared.outputs.kms_key_arn, null)
 }
 
 output "kms_key_id" {
   description = "Key ID of EKS KMS Key"
-  value       = try(module.kms.kms_key_id, null)
+  value       = try(data.terraform_remote_state.shared.outputs.kms_key_id, null)
 }
 
 output "kms_alias_arn" {
   description = "ARN of EKS KMS Alias for EKS Key"
-  value       = try(module.kms.kms_alias_arn, null)
+  value       = try(data.terraform_remote_state.shared.outputs.kms_alias_arn, null)
 }
 
 ## Cloudwatch Log Group - EKS outputs
@@ -54,14 +54,24 @@ output "eks_cluster_arn" {
   value       = try(module.eks.eks_cluster_arn, null)
 }
 
+output "eks_cluster_name" {
+  description = "ARN of EKS Cluster"
+  value       = try(module.eks.eks_cluster_name, null)
+}
+
 output "eks_cluster_id" {
   description = "ARN of EKS Cluster"
   value       = try(module.eks.eks_cluster_arn, null)
 }
 
 output "eks_cluster_platform_version" {
-  description = "Platform Version of EKS Cluster"
+  description = "ARN of EKS Cluster"
   value       = try(module.eks.eks_cluster_platform_version, null)
+}
+
+output "eks_cluster_ca_certificate" {
+  description = "Platform Version of EKS Cluster"
+  value       = try(module.eks.eks_cluster_ca_certificate, null)
 }
 
 output "eks_cluster_status" {
@@ -153,7 +163,7 @@ output "oidc_url" {
 }
 
 # ECR Outputs
-output "ecr" {
+output "ecr_url" {
   description = "ECR URL"
-  value       = try(module.ecr.ecr, null)
+  value       = try(data.terraform_remote_state.shared.outputs.ecr_url, null)
 }

@@ -1,10 +1,4 @@
 # Locals for common
-data "aws_region" "current" {}
-
-data "aws_caller_identity" "current" {}
-
-data "aws_availability_zones" "available" {}
-
 data "tls_certificate" "oidc" {
   url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
@@ -14,12 +8,8 @@ data "http" "myip" {
 }
 
 locals {
-  project        = var.project
-  environment    = var.environment
-  tenant         = var.tenant
-  aws_region     = data.aws_region.current.name
-  account_id     = data.aws_caller_identity.current.account_id
-  account_number = data.aws_caller_identity.current.account_id
+  project     = var.project
+  environment = var.environment
   # VPC related
   vpc = {
     vpc_id            = var.vpc_id
@@ -41,7 +31,7 @@ locals {
     instance_type = "t3.micro"
     keypair_name  = var.bastion_keypair_name
     public_sg_id  = var.bastion_public_sg_id
-    private_sg_id = var.bastion_public_sg_id
+    private_sg_id = var.bastion_private_sg_id
   }
   eks = {
     cluster_name  = "${lower(local.project)}-${lower(local.environment)}-eks"

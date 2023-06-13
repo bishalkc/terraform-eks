@@ -17,6 +17,16 @@ output "eks_cluster_id" {
   value       = aws_eks_cluster.eks.id
 }
 
+output "eks_cluster_name" {
+  description = "ARN of EKS Cluster 1"
+  value       = aws_eks_cluster.eks.name
+}
+
+output "eks_cluster_ca_certificate" {
+  description = "ARN of EKS Cluster 1"
+  value       = aws_eks_cluster.eks.name
+}
+
 output "eks_cluster_platform_version" {
   description = "Platform Version of EKS Cluster 1"
   value       = aws_eks_cluster.eks.platform_version

@@ -4,6 +4,10 @@ terraform {
     archive = {
       source = "hashicorp/archive"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.2.0"
+    }
   }
 }
 provider "aws" {
@@ -14,4 +18,6 @@ provider "aws" {
       Tenant      = local.tenant
     }
   }
+  alias  = "east"
+  region = "us-east-1"
 }
