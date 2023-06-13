@@ -33,30 +33,6 @@ locals {
   account_id     = data.aws_caller_identity.current.account_id
   account_number = data.aws_caller_identity.current.account_id
 
-  # VPC related
-  vpc = {
-    vpc_id         = var.vpc_id
-    vpc_cidr_block = var.vpc_cidr_block
-
-    # Bastion public subnet
-    subnet_public  = var.vpc_public_subnet
-    subnet_private = var.vpc_private_subnet
-    # subnet_private_1_eks_cp_id = data.terraform_remote_state.vpc.outputs.subnet_private_1_eks_cp_id
-    # subnet_private_2_eks_cp_id = data.terraform_remote_state.vpc.outputs.subnet_private_2_eks_cp_id
-
-    # subnet_private_1_eks_wrkr_id = data.terraform_remote_state.vpc.outputs.subnet_private_1_eks_wrkr_id
-    # subnet_private_2_eks_wrkr_id = data.terraform_remote_state.vpc.outputs.subnet_private_2_eks_wrkr_id
-
-    # APP: Backend IAM Role for Pod Service Account
-    # app_backend_iam_oidc_pods_1_arn  = data.terraform_remote_state.app_backend.outputs.iam_oidc_pods_1_arn
-  }
-
-  bastion = {
-    instance_type  = var.bastion_instance_type
-    eks_version    = var.eks_version
-    create_private = var.create_bastion_private
-    create_public  = var.create_bastion_public
-  }
   eks = {
     cluster_name = "${lower(local.project)}-${lower(local.environment)}-eks"
   }
