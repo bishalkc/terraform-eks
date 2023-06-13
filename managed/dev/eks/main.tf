@@ -69,4 +69,7 @@ module "addon" {
   # OIDC Values
   aws_oidc_url = module.eks.oidc_url
   aws_oidc_arn = module.eks.oidc_arn
+
+  # VPC
+  eks_cluster_name = module.eks.eks_cluster_name
 }
