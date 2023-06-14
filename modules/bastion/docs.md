@@ -4,15 +4,17 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_http"></a> [http](#requirement\_http) | 3.1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.3.0 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | ~> 3.1.0 |
+| <a name="requirement_template"></a> [template](#requirement\_template) | ~> 2.2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.3.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | 3.1.0 |
-| <a name="provider_template"></a> [template](#provider\_template) | n/a |
+| <a name="provider_template"></a> [template](#provider\_template) | 2.2.0 |
 
 ## Modules
 
@@ -40,10 +42,9 @@ No modules.
 | [aws_security_group_rule.private_egress_all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.private_ingress_22_custom](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_ami.bastion_amazon_linux_2_latest](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [http_http.myip](https://registry.terraform.io/providers/hashicorp/http/3.1.0/docs/data-sources/http) | data source |
+| [http_http.myip](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
 | [template_file.public](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 
 ## Inputs
@@ -51,13 +52,12 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_bastion_instance_type"></a> [bastion\_instance\_type](#input\_bastion\_instance\_type) | Define bastion instance type | `string` | `"t3.micro"` | no |
-| <a name="input_create_bastion_private"></a> [create\_bastion\_private](#input\_create\_bastion\_private) | Creates Private Bastion | `bool` | `false` | no |
-| <a name="input_create_bastion_public"></a> [create\_bastion\_public](#input\_create\_bastion\_public) | Creates Public Bastion | `bool` | `true` | no |
+| <a name="input_create_private_bastion"></a> [create\_private\_bastion](#input\_create\_private\_bastion) | Creates Private Bastion | `bool` | `false` | no |
+| <a name="input_create_public_bastion"></a> [create\_public\_bastion](#input\_create\_public\_bastion) | Creates Public Bastion | `bool` | `true` | no |
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | EKS Cluster Name | `string` | n/a | yes |
 | <a name="input_eks_version"></a> [eks\_version](#input\_eks\_version) | Define EKS version | `string` | `"1.27"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Project Environment | `string` | n/a | yes |
 | <a name="input_project"></a> [project](#input\_project) | Project Name | `string` | n/a | yes |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Project Tenant | `string` | `"demo"` | no |
-| <a name="input_vpc_cidr_block"></a> [vpc\_cidr\_block](#input\_vpc\_cidr\_block) | Define VPC CIDR Block | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Define VPC ID | `string` | n/a | yes |
 | <a name="input_vpc_private_subnet"></a> [vpc\_private\_subnet](#input\_vpc\_private\_subnet) | Creates Public Subnet for Bastion | `string` | n/a | yes |
 | <a name="input_vpc_public_subnet"></a> [vpc\_public\_subnet](#input\_vpc\_public\_subnet) | Creates Public Subnet for Bastion | `string` | n/a | yes |

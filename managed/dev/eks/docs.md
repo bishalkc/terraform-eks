@@ -4,33 +4,29 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 2.4.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.3.0 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | ~> 3.1.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.21.1 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.2.0 |
-| <a name="provider_http"></a> [http](#provider\_http) | 3.1.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_addon"></a> [addon](#module\_addon) | ../../../modules/addon | n/a |
-| <a name="module_bastion"></a> [bastion](#module\_bastion) | ../../../modules/bastion | n/a |
-| <a name="module_ecr"></a> [ecr](#module\_ecr) | ../../../modules/ecr | n/a |
 | <a name="module_eks"></a> [eks](#module\_eks) | ../../../modules/eks | n/a |
-| <a name="module_kms"></a> [kms](#module\_kms) | ../../../modules/kms | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [http_http.myip](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
+| [terraform_remote_state.shared](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.vpc](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 
 ## Inputs
@@ -47,11 +43,13 @@ No inputs.
 | <a name="output_bastion_public_sg_arn"></a> [bastion\_public\_sg\_arn](#output\_bastion\_public\_sg\_arn) | Bastion Public SG ARN |
 | <a name="output_bastion_public_sg_id"></a> [bastion\_public\_sg\_id](#output\_bastion\_public\_sg\_id) | Bastion Public SG ID |
 | <a name="output_cloudwatch_loggroup_eks_arn"></a> [cloudwatch\_loggroup\_eks\_arn](#output\_cloudwatch\_loggroup\_eks\_arn) | ARN of Cloudwatch log group for eks |
-| <a name="output_ecr"></a> [ecr](#output\_ecr) | ECR URL |
+| <a name="output_ecr_url"></a> [ecr\_url](#output\_ecr\_url) | ECR URL |
 | <a name="output_eks_cluster_arn"></a> [eks\_cluster\_arn](#output\_eks\_cluster\_arn) | ARN of EKS Cluster |
+| <a name="output_eks_cluster_ca_certificate"></a> [eks\_cluster\_ca\_certificate](#output\_eks\_cluster\_ca\_certificate) | Platform Version of EKS Cluster |
 | <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint of EKS Cluster |
 | <a name="output_eks_cluster_id"></a> [eks\_cluster\_id](#output\_eks\_cluster\_id) | ARN of EKS Cluster |
-| <a name="output_eks_cluster_platform_version"></a> [eks\_cluster\_platform\_version](#output\_eks\_cluster\_platform\_version) | Platform Version of EKS Cluster |
+| <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | ARN of EKS Cluster |
+| <a name="output_eks_cluster_platform_version"></a> [eks\_cluster\_platform\_version](#output\_eks\_cluster\_platform\_version) | ARN of EKS Cluster |
 | <a name="output_eks_cluster_status"></a> [eks\_cluster\_status](#output\_eks\_cluster\_status) | Status of EKS Cluster |
 | <a name="output_iam_cluster_role_arn"></a> [iam\_cluster\_role\_arn](#output\_iam\_cluster\_role\_arn) | ARN of EKS IAM Role |
 | <a name="output_iam_cluster_role_id"></a> [iam\_cluster\_role\_id](#output\_iam\_cluster\_role\_id) | ID of EKS IAM Role |

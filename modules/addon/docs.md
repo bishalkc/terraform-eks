@@ -4,14 +4,13 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_http"></a> [http](#requirement\_http) | 3.1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_http"></a> [http](#provider\_http) | 3.1.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.3.0 |
 
 ## Modules
 
@@ -31,12 +30,8 @@ No modules.
 | [aws_iam_role_policy_attachment.addon_ebs_role_kms_grant_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.addon_ebs_role_kms_readright_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.addon_ebs_role_servicerole_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.addon_cni_role_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.addon_ebs_role_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
-| [http_http.myip](https://registry.terraform.io/providers/hashicorp/http/3.1.0/docs/data-sources/http) | data source |
 
 ## Inputs
 
@@ -48,11 +43,11 @@ No modules.
 | <a name="input_cni_addon_version"></a> [cni\_addon\_version](#input\_cni\_addon\_version) | Define CNI Addon Version | `string` | `"v1.12.6-eksbuild.2"` | no |
 | <a name="input_ebs_addon_name"></a> [ebs\_addon\_name](#input\_ebs\_addon\_name) | Define EBS Addon Name | `string` | `"aws-ebs-csi-driver"` | no |
 | <a name="input_ebs_addon_version"></a> [ebs\_addon\_version](#input\_ebs\_addon\_version) | Define EBS Addon Version | `string` | `"v1.19.0-eksbuild.2"` | no |
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name of the cluster | `string` | n/a | yes |
 | <a name="input_enable_cni"></a> [enable\_cni](#input\_enable\_cni) | Enable CNI Addon | `bool` | n/a | yes |
 | <a name="input_enable_ebs"></a> [enable\_ebs](#input\_enable\_ebs) | Enable EBS Addon | `bool` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Project Environment | `string` | n/a | yes |
 | <a name="input_project"></a> [project](#input\_project) | Project Name | `string` | n/a | yes |
-| <a name="input_tenant"></a> [tenant](#input\_tenant) | Project Tenant | `string` | `"demo"` | no |
 
 ## Outputs
 
