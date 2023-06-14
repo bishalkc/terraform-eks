@@ -5,8 +5,9 @@ terraform {
       source = "hashicorp/archive"
     }
     aws = {
-      source  = "hashicorp/aws"
-      version = "5.2.0"
+      source                = "hashicorp/aws"
+      version               = "5.2.0"
+      configuration_aliases = [aws.default, aws.ohio]
     }
   }
 }
@@ -18,6 +19,18 @@ provider "aws" {
       Tenant      = local.tenant
     }
   }
-  alias  = "east"
+  alias  = "default"
   region = "us-east-1"
+}
+
+provider "aws" {
+  default_tags {
+    tags = {
+      Owner       = local.project
+      Environment = local.environment
+      Tenant      = local.tenant
+    }
+  }
+  alias  = "ohio"
+  region = "us-east-2"
 }

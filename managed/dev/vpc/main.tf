@@ -1,9 +1,8 @@
-
 module "vpc" {
   source = "../../../modules/vpc"
 
   providers = {
-    aws = aws.east
+    aws = aws.default
   }
 
   project            = local.project

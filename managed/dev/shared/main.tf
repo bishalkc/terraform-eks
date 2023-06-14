@@ -14,7 +14,7 @@ module "kms" {
 module "ecr" {
 
   providers = {
-    aws = aws.default
+    aws = aws.ohio
   }
 
   source = "../../../modules/ecr"
