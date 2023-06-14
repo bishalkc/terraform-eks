@@ -38,26 +38,34 @@ variable "kms_key_arn" {
   description = "Define KMS Key ARN"
   type        = string
 }
-variable "bastion_keypair_name" {
-  description = "Bastion KeyPair Name"
-  type        = string
+variable "create_public_bastion" {
+  description = "Creates Public Bastion"
+  type        = bool
+  default     = true
 }
-variable "bastion_public_sg_id" {
-  description = "Bastion Public Security Group"
-  type        = string
-  default     = "null"
-}
-variable "bastion_private_sg_id" {
-  description = "Bastion Private Security Group"
-  type        = string
-  default     = "null"
-}
-variable "eks_lb_controller" {
-  description = "Create LB Controller"
+variable "create_private_bastion" {
+  description = "Creates Private Bastion"
   type        = bool
   default     = false
 }
 variable "eks_cluster_name" {
   description = "Name of EKS Cluster"
+  type        = string
+}
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
+variable "bastion_instance_type" {
+  description = "Define bastion instance type"
+  type        = string
+  default     = "t3.micro"
+}
+variable "vpc_public_subnet" {
+  description = "Creates Public Subnet for Bastion"
+  type        = string
+}
+variable "vpc_private_subnet" {
+  description = "Creates Public Subnet for Bastion"
   type        = string
 }

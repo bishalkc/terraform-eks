@@ -1,26 +1,26 @@
 # Bastion  Outputs
 output "bastion_keypair_name" {
   description = "Bastion KeyPair Name"
-  value       = try(module.bastion.bastion_keypair_name, null)
+  value       = try(module.eks.bastion_keypair_name, null)
 }
 
 output "bastion_public_sg_id" {
   description = "Bastion Public SG ID"
-  value       = try(module.bastion.bastion_public_sg_id, null)
+  value       = try(module.eks.bastion_public_sg_id, null)
 }
 output "bastion_public_sg_arn" {
   description = "Bastion Public SG ARN"
-  value       = try(module.bastion.bastion_public_sg_arn, null)
+  value       = try(module.eks.bastion_public_sg_arn, null)
 }
 
 output "bastion_private_sg_id" {
   description = "Bastion Private SG ID"
-  value       = try(module.bastion.bastion_private_sg_id, null)
+  value       = try(module.eks.bastion_private_sg_id, null)
 }
 
 output "bastion_private_sg_arn" {
   description = "Bastion Private SG ARN"
-  value       = try(module.bastion.bastion_private_sg_arn, null)
+  value       = try(module.eks.bastion_private_sg_arn, null)
 }
 
 ## KMS outputs

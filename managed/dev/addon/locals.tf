@@ -4,12 +4,6 @@ locals {
   environment = "dev"
   tenant      = "DC"
 
-  bastion = {
-    create_public  = true
-    create_private = false
-    instance_type  = "t3.micro"
-    eks_verion     = local.eks.version
-  }
   eks = {
     cluster_name = "${lower(local.project)}-${lower(local.environment)}-eks"
     cni_addon = {
@@ -22,9 +16,10 @@ locals {
       version = "v1.19.0-eksbuild.2"
       enable  = true
     }
-    version       = "1.27"
-    instance_type = "t3.medium"
-    volume_size   = 20
-    volume_type   = "gp3"
+    enable_lb_controller = true
+    version              = "1.27"
+    instance_type        = "t3.medium"
+    volume_size          = 20
+    volume_type          = "gp3"
   }
 }

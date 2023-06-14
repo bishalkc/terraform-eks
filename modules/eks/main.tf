@@ -1,25 +1,3 @@
-terraform {
-  required_version = ">= 1.0.0"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.3.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.21.1"
-    }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 4.0"
-    }
-    http = {
-      source  = "hashicorp/http"
-      version = "~> 3.1.0"
-    }
-  }
-}
-
 ################################################################################
 # EKS CLUSTER
 ################################################################################
@@ -265,15 +243,15 @@ resource "aws_launch_template" "worker_t3micro_lt" {
     cpu_credits = "unlimited"
   }
 
-  key_name = var.bastion_keypair_name
+  key_name = aws_key_pair.bastion.key_name
 
   monitoring {
     enabled = true
   }
 
   vpc_security_group_ids = [
-    var.bastion_public_sg_id,
-    var.bastion_private_sg_id,
+    aws_security_group.bastion_public[0].id,
+    aws_security_group.bastion_public[0].id,
     aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id
   ]
 
@@ -339,19 +317,220 @@ resource "aws_iam_openid_connect_provider" "oidc" {
 
 }
 
+data "template_file" "public" {
+  template = file("${path.module}/files/bastion_userdata.tpl")
+
+  vars = {
+    hostname = "${var.project}-${var.environment}.svcs.local"
+    fqdn     = "${var.project}-${var.environment}.svcs.local"
+    version  = var.eks_version
+  }
+}
+
 ################################################################################
-# SECURITY GROUPS FOR BASTION HOSTS
+# BASTION KEY PAIR
 ################################################################################
-## THESE ARE ADDITIONAL SG RULES FOR THE SECURITY GROUP THAT EKS CLUSTER CREATES AUTOMATICALLY
+resource "aws_key_pair" "bastion" {
+  key_name   = "bastion-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCt+ReNnPHoKgSLpQCdZQ8kOn5rpkICTHskQEezhyvu/27e6XzZ/8QUtBR6rdN+pjRbcRgP9lRK7xONamEgvRYBWQDaRBirgiEPEMLZC30a/ouDJlwnJdppBHRB0VV3Dilg1kdg1y1wDXnTGA0yZeBwIt8NXDHrugYnA1SBbGRHSKaFFK5WelyTbLO2q53sipF+8PvPw847Yz/8zIAeYXnMZJSSKRVTRBoDsFjx1jQo+mfsXc7pZ4JJ+Eyq926auuIAKHkFUrIaBg8FTP/3lyIB8Cd2IwH7AM97oZSUYB6R0RAOo6hEiXNarozkjks2jt4ZRT9pym4yxzS9a/jRhb5wa7oCUQyQXinzdaQIITVm767+Wl32Q9v/q9NG9uOBsKRiMDnjvt6idsDMEakBRP2lPj2svnSRnFe+2PQjJECShRM9RG4zfrLOENA0c7TEG0x9cH4xl1P+EeZcVne1IzYIZOL942haXzgIkwnLOxnD3VzrAf35YOvBHzBsE5EUxfE= bkc@bishals-mbp.lan"
+}
+
+################################################################################
+################################################################################
+# BASTION PUBLIC
+################################################################################
+################################################################################
+
+
+################################################################################
+# BASTION PUBLIC INSTANCE
+################################################################################
+resource "aws_instance" "bastion_public" {
+  count = var.create_public_bastion ? 1 : 0
+
+  ami                         = data.aws_ami.bastion_amazon_linux_2_latest.id
+  associate_public_ip_address = true
+  disable_api_termination     = false
+  iam_instance_profile        = aws_iam_instance_profile.public_bastion_ip[count.index].name
+  instance_type               = var.bastion_instance_type
+  key_name                    = aws_key_pair.bastion.key_name
+  subnet_id                   = var.vpc_public_subnet
+  user_data                   = data.template_file.public.rendered
+  vpc_security_group_ids      = [aws_security_group.bastion_public[count.index].id]
+
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+
+  root_block_device {
+    delete_on_termination = true
+    encrypted             = true
+    tags = {
+      Name      = "/dev/xvda-${var.project}-${var.environment}"
+      Tier      = "primary"
+      Encrypted = "true"
+      Role      = "volume"
+      Tier      = "private"
+      Resource  = "ebs"
+    }
+  }
+
+  depends_on = [aws_iam_role.public_bastion_role, aws_security_group.bastion_public]
+  tags = {
+    Name      = "${var.project}-${var.environment}"
+    Host_Type = "static"
+    Tier      = "public"
+    Role      = "instance"
+    Resource  = "ec2"
+  }
+
+  #To get eks cluster config: aws eks update-kubeconfig --name ccp-sandbox-eks-1 --kubeconfig ~/.kube/config --region us-east-1
+
+}
+
+################################################################################
+# BASTION PUBLIC INSTANCE PROFILE
+################################################################################
+resource "aws_iam_instance_profile" "public_bastion_ip" {
+  count = var.create_public_bastion ? 1 : 0
+
+  name = "ip-public-${var.project}-${var.environment}"
+  role = aws_iam_role.public_bastion_role[count.index].name
+
+  depends_on = [
+    aws_iam_role.public_bastion_role,
+  ]
+
+  tags = {
+    Name     = "ip-public-${var.project}-${var.environment}"
+    Tier     = "public"
+    Role     = "instance"
+    Resource = "instance_profile"
+  }
+
+}
+
+################################################################################
+# BASTION PUBLIC ROLE
+################################################################################
+resource "aws_iam_role" "public_bastion_role" {
+  count = var.create_public_bastion ? 1 : 0
+
+  name               = "role-public-${var.project}-${var.environment}"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+
+  tags = {
+    Name     = "role-public-${var.project}-${var.environment}"
+    Tier     = "public"
+    Role     = "instance"
+    Resource = "iam_role"
+  }
+
+}
+
+################################################################################
+# BASTION EKS PUBLIC POLICY
+################################################################################
+resource "aws_iam_policy" "public_bastion_eks_policy" {
+  count = var.create_public_bastion ? 1 : 0
+
+  name        = "policy-public-${var.project}-${var.environment}-eks"
+  path        = "/"
+  description = "Policy for Public Bastion to access EKS"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "eks:*",
+        ]
+        Effect   = "Allow"
+        Resource = aws_eks_cluster.eks.arn
+      },
+    ]
+  })
+
+}
+
+resource "aws_iam_policy_attachment" "public_bastion_eks_policy_attachment" {
+  count = var.create_public_bastion ? 1 : 0
+
+  name = "attachment-policy-public-${var.project}-${var.environment}-eks"
+  roles = [
+    aws_iam_role.public_bastion_role[count.index].name
+  ]
+  policy_arn = aws_iam_policy.public_bastion_eks_policy[count.index].arn
+}
+
+################################################################################
+# BASTION PUBLIC SECUTIRY GROUP
+################################################################################
+
+resource "aws_security_group" "bastion_public" {
+  count       = var.create_public_bastion ? 1 : 0
+  name        = "${var.project}-${var.environment}-public"
+  description = "Security Group for Bastion Host"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name     = "sg-${var.project}-${var.environment}",
+    Tier     = "public"
+    Role     = "instance"
+    Resource = "security_group"
+  }
+}
+
+resource "aws_security_group_rule" "ingress_22_custom" {
+  count = var.create_public_bastion ? 1 : 0
+
+  type              = "ingress"
+  description       = "Custom IP"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["${local.my_ip}/32"]
+  security_group_id = aws_security_group.bastion_public[count.index].id
+  depends_on        = [aws_security_group.bastion_public]
+}
+
+resource "aws_security_group_rule" "egress_all" {
+  count = var.create_public_bastion ? 1 : 0
+
+  type              = "egress"
+  description       = "All allowed"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.bastion_public[count.index].id
+  depends_on        = [aws_security_group.bastion_public]
+}
+
 resource "aws_security_group_rule" "eks_ingress_public_bastion" {
-  count = var.bastion_public_sg_id != "null" ? 1 : 0
+  count = var.create_private_bastion ? 1 : 0
 
   type                     = "ingress"
   description              = "HTTPS ingress allowed from Public Bastion SG"
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = var.bastion_public_sg_id
+  source_security_group_id = aws_security_group.bastion_public[count.index].id
   security_group_id        = data.aws_security_group.eks_auto.id
 
   depends_on = [
@@ -359,106 +538,207 @@ resource "aws_security_group_rule" "eks_ingress_public_bastion" {
   ]
 }
 
-# resource "aws_security_group_rule" "eks_ingress_private_bastion" {
-#   count = var.bastion_private_sg_id != "null" ? 1 : 0
-
-#   type                     = "ingress"
-#   description              = "HTTPS ingress allowed from Private Bastion SG"
-#   from_port                = 443
-#   to_port                  = 443
-#   protocol                 = "tcp"
-#   source_security_group_id = var.bastion_private_sg_id
-#   security_group_id        = data.aws_security_group.eks_auto.id
-
-#   depends_on = [
-#     aws_eks_cluster.eks,
-#   ]
-
-# }
+################################################################################
+################################################################################
+# BASTION PRIVATE
+################################################################################
+################################################################################
 
 
 ################################################################################
-# LB CONTROLLER
+# BASTION PRIVATE INSTANCE
 ################################################################################
-data "aws_iam_policy_document" "lb_controrller_role_policy" {
-  count = var.eks_lb_controller ? 1 : 0
+resource "aws_instance" "bastion_private" {
+  count                       = var.create_private_bastion ? 1 : 0
+  ami                         = data.aws_ami.bastion_amazon_linux_2_latest.id
+  associate_public_ip_address = false
+  disable_api_termination     = false
+  iam_instance_profile        = aws_iam_instance_profile.private_bastion_ip[count.index].name
+  instance_type               = var.bastion_instance_type
+  key_name                    = aws_key_pair.bastion.key_name
+  subnet_id                   = var.vpc_private_subnet
+  user_data                   = data.template_file.public.rendered
+  vpc_security_group_ids      = [aws_security_group.bastion_private[count.index].id]
 
-  statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+  depends_on = [aws_iam_role.private_bastion_role, aws_security_group.bastion_private]
+  root_block_device {
+    delete_on_termination = true
+    encrypted             = true
 
-    condition {
-      test     = "StringEquals"
-      variable = "${replace(aws_iam_openid_connect_provider.oidc.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+    tags = {
+      Name      = "/dev/xvda-${var.project}-${var.environment}"
+      Tier      = "primary"
+      Encrypted = "true"
+      Role      = "volume"
+      Tier      = "private"
+      Resource  = "ebs"
     }
+  }
 
-    principals {
-      identifiers = [aws_iam_openid_connect_provider.oidc.arn]
-      type        = "Federated"
-    }
+  lifecycle {
+    ignore_changes = [user_data, ami]
+  }
+
+  tags = {
+    Name      = "${var.project}-${var.environment}"
+    Host_Type = "static"
+    Tier      = "public"
+    Role      = "instance"
+    Resource  = "ec2"
   }
 }
 
-resource "aws_iam_role" "lb_controller_role" {
-  count              = var.eks_lb_controller ? 1 : 0
-  name               = "role-oidc-lb-controller-${var.project}-${var.environment}"
-  assume_role_policy = data.aws_iam_policy_document.lb_controrller_role_policy[count.index].json
+################################################################################
+# BASTION PRIVATE INSTANCE PROFILE
+################################################################################
+resource "aws_iam_instance_profile" "private_bastion_ip" {
+  count = var.create_private_bastion ? 1 : 0
+
+  name = "ip-private-${var.project}-${var.environment}"
+  role = aws_iam_role.private_bastion_role[count.index].name
+
   depends_on = [
-    aws_iam_openid_connect_provider.oidc,
+    aws_iam_role.private_bastion_role,
   ]
 
   tags = {
-    Name     = "role-oidc-lb-controller-${var.project}-${var.environment}"
+    Name     = "ip-private-${var.project}-${var.environment}"
     Tier     = "private"
-    Role     = "eks"
+    Role     = "instance"
+    Resource = "instance_profile"
+  }
+
+}
+
+################################################################################
+# BASTION PRIVATE INSTANCE ROLE
+################################################################################
+resource "aws_iam_role" "private_bastion_role" {
+  count = var.create_private_bastion ? 1 : 0
+
+  name               = "role-private-${var.project}-${var.environment}"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+
+  tags = {
+    Name     = "role-private-${var.project}-${var.environment}"
+    Tier     = "private"
+    Role     = "instance"
     Resource = "iam_role"
   }
 
 }
 
-resource "aws_iam_policy" "lb_controller_role_policy" {
-  count       = var.eks_lb_controller ? 1 : 0
-  name        = "policy-oidc-lb-controller-${var.project}-${var.environment}"
+################################################################################
+# BASTION PRIVATE EKS POLICY
+################################################################################
+resource "aws_iam_policy" "private_bastion_eks_policy" {
+  count = var.create_private_bastion ? 1 : 0
+
+  name        = "policy-private-${var.project}-${var.environment}-eks"
   path        = "/"
-  description = "Policy for EKS LoadBalancer Controller of EKS ${var.project} ${var.environment}"
-  policy      = file("${path.module}/policies/eks_lb_controller_policy.json")
+  description = "Policy for Public Bastion to access EKS"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "eks:*",
+        ]
+        Effect   = "Allow"
+        Resource = aws_eks_cluster.eks.arn
+      },
+    ]
+  })
+
+}
+
+resource "aws_iam_policy_attachment" "private_bastion_eks_policy_attachment" {
+  count = var.create_private_bastion ? 1 : 0
+
+  name = "attachment-policy-private-${var.project}-${var.environment}-eks"
+  roles = [
+    aws_iam_role.private_bastion_role[count.index].name
+  ]
+  policy_arn = aws_iam_policy.private_bastion_eks_policy[count.index].arn
+}
+
+################################################################################
+# BASTION PRIVATE SECUTIRY GROUP
+################################################################################
+resource "aws_security_group" "bastion_private" {
+  count = var.create_private_bastion ? 1 : 0
+
+  name        = "${var.project}-${var.environment}-private"
+  description = "Security Group for Private Bastion Host"
+  vpc_id      = var.vpc_id
 
   tags = {
-    Name     = "policy-oidc-lb-controller-${var.project}-${var.environment}"
-    Tier     = "private"
-    Role     = "eks"
-    Resource = "iam_policy"
+    Name     = "sg-${var.project}-${var.environment}-private",
+    Tier     = "Private"
+    Role     = "instance"
+    Resource = "security_group"
   }
+
 }
 
-resource "aws_iam_role_policy_attachment" "lb_controller_policy_attachment" {
-  count = var.eks_lb_controller ? 1 : 0
+resource "aws_security_group_rule" "private_ingress_22_custom" {
+  count = var.create_private_bastion ? 1 : 0
 
-  policy_arn = aws_iam_policy.lb_controller_role_policy[count.index].arn
-  role       = aws_iam_role.lb_controller_role[count.index].name
+  type              = "ingress"
+  description       = "Custom IP"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["${local.my_ip}/32"]
+  security_group_id = aws_security_group.bastion_private[count.index].id
+  depends_on        = [aws_security_group.bastion_private]
+}
+
+resource "aws_security_group_rule" "private_egress_all" {
+  count = var.create_private_bastion ? 1 : 0
+
+  type              = "egress"
+  description       = "All allowed"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.bastion_private[count.index].id
+  depends_on        = [aws_security_group.bastion_private]
+}
+
+resource "aws_security_group_rule" "eks_ingress_private_bastion" {
+  count = var.create_private_bastion ? 1 : 0
+
+  type                     = "ingress"
+  description              = "HTTPS ingress allowed from Private Bastion SG"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.bastion_private[count.index].id
+  security_group_id        = data.aws_security_group.eks_auto.id
 
   depends_on = [
-    aws_iam_policy.lb_controller_role_policy,
+    aws_eks_cluster.eks,
   ]
-}
 
-################################################################################
-# LB SERVICE ACCOUNT
-################################################################################
-resource "kubernetes_service_account_v1" "lb_service_account" {
-  count = var.eks_lb_controller ? 1 : 0
-  metadata {
-    name = "aws-load-balancer-controller"
-    labels = {
-      "app.kubernetes.io/component" = "controller"
-      "app.kubernetes.io/name"      = "aws-load-balancer-controller"
-    }
-    namespace = "kube-system"
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.lb_controller_role[count.index].arn
-    }
-  }
-  automount_service_account_token = true
-  depends_on                      = [aws_iam_role.lb_controller_role]
 }
