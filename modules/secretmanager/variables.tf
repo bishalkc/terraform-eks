@@ -9,11 +9,6 @@ variable "environment" {
   description = "Project Environment"
   type        = string
 }
-variable "tenant" {
-  description = "Project Tenant"
-  type        = string
-  default     = "demo"
-}
 variable "framework" {
   description = "App framework"
   type        = string
@@ -36,4 +31,8 @@ variable "kms_id" {
 variable "secret_string" {
   description = " Secrets to populate"
   type        = map(string)
+}
+variable "prefix" {
+  description = "Adding prefix to Secret Manager name"
+  type        = string
 }

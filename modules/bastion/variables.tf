@@ -9,11 +9,6 @@ variable "environment" {
   description = "Project Environment"
   type        = string
 }
-variable "tenant" {
-  description = "Project Tenant"
-  type        = string
-  default     = "demo"
-}
 variable "bastion_instance_type" {
   description = "Define bastion instance type"
   type        = string
@@ -36,10 +31,6 @@ variable "create_private_bastion" {
 }
 variable "vpc_id" {
   description = "Define VPC ID"
-  type        = string
-}
-variable "vpc_cidr_block" {
-  description = "Define VPC CIDR Block"
   type        = string
 }
 variable "vpc_public_subnet" {

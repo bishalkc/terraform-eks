@@ -12,7 +12,7 @@ resource "aws_eks_addon" "cni" {
   resolve_conflicts_on_update = "PRESERVE"
 
   tags = {
-    Name     = "${var.cni_addon_name}-${var.cni_addon_version}-${local.project}-${local.environment}"
+    Name     = "${var.cni_addon_name}-${var.cni_addon_version}-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "networking"
     Resource = "cni"
@@ -44,12 +44,12 @@ data "aws_iam_policy_document" "addon_cni_role_policy_document" {
 resource "aws_iam_role" "addon_cni_role" {
   count = var.enable_cni ? 1 : 0
 
-  name = "role-${var.cni_addon_name}-${local.project}-${local.environment}"
+  name = "role-${var.cni_addon_name}-${var.project}-${var.environment}"
 
   assume_role_policy = data.aws_iam_policy_document.addon_cni_role_policy_document[count.index].json
 
   tags = {
-    Name     = "role-${var.cni_addon_name}-${local.project}-${local.environment}"
+    Name     = "role-${var.cni_addon_name}-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
@@ -85,7 +85,7 @@ resource "aws_eks_addon" "ebs" {
   depends_on = [aws_iam_role.addon_ebs_role]
 
   tags = {
-    Name     = "${var.ebs_addon_name}-${var.ebs_addon_version}-${local.project}-${local.environment}"
+    Name     = "${var.ebs_addon_name}-${var.ebs_addon_version}-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "networking"
     Resource = "ebs"
@@ -121,12 +121,12 @@ data "aws_iam_policy_document" "addon_ebs_role_policy_document" {
 resource "aws_iam_role" "addon_ebs_role" {
   count = var.enable_ebs ? 1 : 0
 
-  name = "role-${var.ebs_addon_name}-${local.project}-${local.environment}"
+  name = "role-${var.ebs_addon_name}-${var.project}-${var.environment}"
 
   assume_role_policy = data.aws_iam_policy_document.addon_ebs_role_policy_document[count.index].json
 
   tags = {
-    Name     = "role-${var.ebs_addon_name}-${local.project}-${local.environment}"
+    Name     = "role-${var.ebs_addon_name}-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
@@ -145,13 +145,13 @@ resource "aws_iam_role_policy_attachment" "addon_ebs_role_servicerole_attachment
 resource "aws_iam_policy" "ebs_kms_readwrite_policy" {
   count = var.enable_ebs ? 1 : 0
 
-  name        = "policy-ebs-kms-readwrite-${local.project}-${local.environment}"
+  name        = "policy-ebs-kms-readwrite-${var.project}-${var.environment}"
   path        = "/"
-  description = "Policy for EBS KMS ${local.project} ${local.environment}"
+  description = "Policy for EBS KMS ${var.project} ${var.environment}"
   policy      = file("${path.module}/policies/kms_policy.json")
 
   tags = {
-    Name     = "policy-ebs-kms-readwrite-${local.project}-${local.environment}"
+    Name     = "policy-ebs-kms-readwrite-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_policy"
@@ -169,13 +169,13 @@ resource "aws_iam_role_policy_attachment" "addon_ebs_role_kms_readright_policy_a
 resource "aws_iam_policy" "ebs_role_kms_grant_policy" {
   count = var.enable_ebs ? 1 : 0
 
-  name        = "policy-ebs-kms-grant-${local.project}-${local.environment}"
+  name        = "policy-ebs-kms-grant-${var.project}-${var.environment}"
   path        = "/"
-  description = "Policy for EBS KMS ${local.project} ${local.environment}"
+  description = "Policy for EBS KMS ${var.project} ${var.environment}"
   policy      = file("${path.module}/policies/kms_grant_policy.json")
 
   tags = {
-    Name     = "policy-ebs-kms-grant-${local.project}-${local.environment}"
+    Name     = "policy-ebs-kms-grant-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_policy"

@@ -2,15 +2,15 @@
 # SSM
 ################################################################################
 resource "aws_ssm_parameter" "param" {
-  name        = "/${local.project}/${local.environment}/${local.framework}/${var.name}"
-  description = "${var.description}-${local.project}-${local.environment}"
+  name        = "/${var.project}/${var.environment}/${var.framework}/${var.name}"
+  description = "${var.description}-${var.project}-${var.environment}"
   type        = var.type
   tier        = var.tier
   data_type   = var.data_type
   key_id      = var.key_id
   value       = var.value
   tags = {
-    Name     = "ssm-${local.project}-${local.environment}-${lower(local.framework)}"
+    Name     = "ssm-${var.project}-${var.environment}-${lower(var.framework)}"
     Tier     = "private"
     Role     = "eks"
     Resource = "param_store"

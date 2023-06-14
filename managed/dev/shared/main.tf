@@ -8,7 +8,6 @@ module "kms" {
 
   project     = local.project
   environment = local.environment
-  tenant      = local.tenant
   create_kms  = local.create.kms
 }
 

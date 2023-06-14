@@ -7,13 +7,12 @@ module "bastion" {
 
   project                = local.project
   environment            = local.environment
-  tenant                 = local.tenant
   bastion_instance_type  = local.bastion.instance_type
   eks_version            = local.bastion.eks_verion
-  create_bastion_public  = local.bastion.create_public
-  create_bastion_private = local.bastion.create_private
+  eks_cluster_name       = local.eks.cluster_name
+  create_public_bastion  = local.bastion.create_public
+  create_private_bastion = local.bastion.create_private
   vpc_id                 = data.terraform_remote_state.vpc.outputs.vpc_id
-  vpc_cidr_block         = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
   vpc_public_subnet      = data.terraform_remote_state.vpc.outputs.public[0]
   vpc_private_subnet     = data.terraform_remote_state.vpc.outputs.svcs[0]
 
@@ -38,8 +37,6 @@ module "eks" {
   eks_volume_type   = local.eks.volume_type
 
   # VPC Values
-  vpc_id            = data.terraform_remote_state.vpc.outputs.vpc_id
-  vpc_cidr_block    = data.terraform_remote_state.vpc.outputs.vpc_cidr_block
   cp_subnet_ids     = data.terraform_remote_state.vpc.outputs.cp
   worker_subnet_ids = data.terraform_remote_state.vpc.outputs.worker
 
@@ -52,7 +49,8 @@ module "eks" {
   bastion_private_sg_id = local.bastion.create_private == true ? module.bastion.bastion_private_sg_id[0] : "null"
 
   # Enable LB Controller
-  lb_controller = true
+  eks_lb_controller = true
+  eks_cluster_name  = local.eks.cluster_name
 }
 
 module "addon" {
@@ -60,7 +58,6 @@ module "addon" {
 
   project     = local.project
   environment = local.environment
-  tenant      = local.tenant
 
   # ADDON
   enable_cni = local.eks.cni_addon.enable

@@ -2,14 +2,14 @@
 # ECR
 ################################################################################
 resource "aws_ecr_repository" "ecr" {
-  count = local.create_ecr ? 1 : 0
+  count = var.create_ecr ? 1 : 0
 
-  name = "${local.project}-${local.environment}"
+  name = "${var.project}-${var.environment}"
   image_scanning_configuration {
     scan_on_push = true
   }
   tags = {
-    Name     = "ecr-${local.project}-${local.environment}"
+    Name     = "ecr-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "ecr"
     Resource = "ecr"
@@ -20,14 +20,14 @@ resource "aws_ecr_repository" "ecr" {
 # ECR POLICY
 ################################################################################
 resource "aws_ecr_repository_policy" "ecr" {
-  count = local.create_ecr ? 1 : 0
+  count = var.create_ecr ? 1 : 0
 
   repository = aws_ecr_repository.ecr[count.index].name
   policy     = file("${path.module}/policies/ecr_repository_policy.json")
 }
 
 resource "aws_ecr_lifecycle_policy" "ecr_lifecycle_policy" {
-  count = local.create_ecr ? 1 : 0
+  count = var.create_ecr ? 1 : 0
 
   repository = aws_ecr_repository.ecr[count.index].name
 

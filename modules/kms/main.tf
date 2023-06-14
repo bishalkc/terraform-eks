@@ -2,14 +2,14 @@
 # KMS KEY
 ################################################################################
 resource "aws_kms_key" "kms" {
-  count               = local.create_kms ? 1 : 0
-  description         = "KMS Key for ${local.project} ${local.environment}"
+  count               = var.create_kms ? 1 : 0
+  description         = "KMS Key for ${var.project} ${var.environment}"
   is_enabled          = true
   enable_key_rotation = true
   key_usage           = "ENCRYPT_DECRYPT"
   policy              = data.aws_iam_policy_document.kms_policy[count.index].json
   tags = {
-    Name     = "kms-key-${local.project}-${local.environment}"
+    Name     = "kms-key-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "kms_keys"
@@ -20,8 +20,8 @@ resource "aws_kms_key" "kms" {
 # KMS ALIAS
 ################################################################################
 resource "aws_kms_alias" "kms" {
-  count         = local.create_kms ? 1 : 0
-  name          = "alias/${local.project}-${local.environment}"
+  count         = var.create_kms ? 1 : 0
+  name          = "alias/${var.project}-${var.environment}"
   target_key_id = aws_kms_key.kms[count.index].key_id
 }
 
@@ -29,7 +29,7 @@ resource "aws_kms_alias" "kms" {
 # KMS POLICY
 ################################################################################
 data "aws_iam_policy_document" "kms_policy" {
-  count = local.create_kms ? 1 : 0
+  count = var.create_kms ? 1 : 0
   statement {
     sid = "EnableIAMUserPermissions"
 
@@ -131,7 +131,7 @@ data "aws_iam_policy_document" "kms_policy" {
       variable = "kms:CallerAccount"
 
       values = [
-        "${local.account_number}",
+        local.account_number,
       ]
     }
     condition {

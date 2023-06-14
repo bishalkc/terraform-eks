@@ -20,7 +20,7 @@ data "aws_ami" "amazon_linux_2_latest" {
 data "aws_security_group" "eks_auto" {
   filter {
     name   = "group-name"
-    values = ["*${local.eks.cluster_name}*"]
+    values = ["*${var.eks_cluster_name}*"]
   }
   depends_on = [aws_eks_cluster.eks]
 }

@@ -4,17 +4,17 @@
 
 ## DATABSE SECRET AND KEYS
 resource "aws_secretsmanager_secret" "database" {
-  count = local.secret_manager.database ? 1 : 0
+  count = var.create_secret_database ? 1 : 0
 
-  name       = "${lower(local.project)}/${lower(local.environment)}/${lower(local.framework)}/database-${local.prefix}"
-  kms_key_id = local.kms_id
+  name       = "${lower(var.project)}/${lower(var.environment)}/${lower(var.framework)}/database-${var.prefix}"
+  kms_key_id = var.kms_id
 
   # rotation_rules {
   #   automatically_after_days = 30
   # }
 
   tags = {
-    Name     = "secret-manager-${local.project}-${local.environment}-${lower(local.framework)}"
+    Name     = "secret-manager-${var.project}-${var.environment}-${lower(var.framework)}"
     Tier     = "private"
     Role     = "eks"
     Resource = "secret_manager"
@@ -22,7 +22,7 @@ resource "aws_secretsmanager_secret" "database" {
 }
 
 resource "aws_secretsmanager_secret_version" "secret_string" {
-  count = local.secret_manager.database ? 1 : 0
+  count = var.create_secret_database ? 1 : 0
 
   secret_id     = aws_secretsmanager_secret.database[count.index].id
   secret_string = jsonencode(var.secret_string)
@@ -31,13 +31,13 @@ resource "aws_secretsmanager_secret_version" "secret_string" {
 
 ## APP SECRET AND KEYS
 resource "aws_secretsmanager_secret" "app" {
-  count = local.secret_manager.app ? 1 : 0
+  count = var.create_secret_app ? 1 : 0
 
-  name       = "${lower(local.project)}/${lower(local.environment)}/${lower(local.framework)}/app-${local.prefix}"
-  kms_key_id = local.kms_id
+  name       = "${lower(var.project)}/${lower(var.environment)}/${lower(var.framework)}/app-${var.prefix}"
+  kms_key_id = var.kms_id
 
   tags = {
-    Name     = "secret-manager-${local.project}-${local.environment}-${lower(local.framework)}"
+    Name     = "secret-manager-${var.project}-${var.environment}-${lower(var.framework)}"
     Tier     = "private"
     Role     = "eks"
     Resource = "secret_manager"

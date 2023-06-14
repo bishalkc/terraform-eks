@@ -5,8 +5,9 @@ module "secretmanager" {
   }
   project     = local.project
   environment = local.environment
-  tenant      = local.tenant
   kms_id      = data.terraform_remote_state.shared.outputs.kms_key_id[0]
+  prefix      = "v1"
+
   secret_string = {
     "user"     = "bkc",
     "password" = "value"
@@ -27,7 +28,6 @@ module "ssm" {
   }
   project     = local.project
   environment = local.environment
-  tenant      = local.tenant
   framework   = local.framework
   key_id      = data.terraform_remote_state.shared.outputs.kms_key_id[0]
   name        = each.key

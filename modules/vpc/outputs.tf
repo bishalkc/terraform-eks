@@ -1,79 +1,97 @@
 ## VPC Outputs
 output "vpc_arn" {
-  value = aws_vpc.vpc.arn
+  description = "VPC ARN"
+  value       = aws_vpc.vpc.arn
 }
 
 output "vpc_id" {
-  value = aws_vpc.vpc.id
+  description = "VPC ID"
+  value       = aws_vpc.vpc.id
 }
 
 output "vpc_cidr_block" {
-  value = aws_vpc.vpc.cidr_block
+  description = "VPC CIDR BLOCK"
+  value       = aws_vpc.vpc.cidr_block
 }
 
 ## SUBNETS (vpc)  - Outputs
 output "public" {
-  value = aws_subnet.public[*].id
+  description = "VPC Public Subnets"
+  value       = aws_subnet.public[*].id
 }
 
 output "database" {
-  value = aws_subnet.database[*].id
+  description = "VPC Database Subnets"
+  value       = aws_subnet.database[*].id
 }
 
 output "cp" {
-  value = aws_subnet.cp[*].id
+  description = "VPC Control Pane Subnets"
+  value       = aws_subnet.cp[*].id
 }
 
 output "svcs" {
-  value = aws_subnet.svcs[*].id
+  description = "VPC Services Subnet"
+  value       = aws_subnet.svcs[*].id
 }
 
 output "worker" {
-  value = aws_subnet.worker[*].id
+  description = "VPC Worker/Node Subnet"
+  value       = aws_subnet.worker[*].id
 }
 
 ## IGW (vpc) Outputs
 output "igw_vpc_arn" {
-  value = aws_internet_gateway.igw.arn
+  description = "IGW ARN"
+  value       = aws_internet_gateway.igw.arn
 }
 
 output "igw_vpc_id" {
-  value = aws_internet_gateway.igw.id
+  description = "IGW ID"
+  value       = aws_internet_gateway.igw.id
 }
 
 ## ROUTE TABLES (vpc) PUBLIC - Outputs
 output "route_table_public_arn" {
-  value = aws_route_table.public.arn
+  description = "VPC Public Route Table ARN"
+  value       = aws_route_table.public.arn
 }
 
 output "route_table_public_id" {
-  value = aws_route_table.public.id
+  description = "VPC Public Route Table ID"
+  value       = aws_route_table.public.id
 }
 
 
 ## ROUTE TABLES (vpc) PRIVATE - Outputs
 output "route_table_private_arn" {
-  value = aws_route_table.private.arn
+  description = "VPC Private Route Table ARN"
+  value       = aws_route_table.private.arn
 }
 
 output "route_table_private_id" {
-  value = aws_route_table.private.id
+  description = "VPC Private Route Table ID"
+  value       = aws_route_table.private.id
 }
 
 ## ELASTIC IP (vpc) NAT GATEWAYS - Outputs
 output "eip_id" {
-  value = aws_eip.nat.id
+  description = "VPC Elastic NAT ID"
+  value       = aws_eip.nat.id
 }
 
 output "eip_public_ip" {
-  value = aws_eip.nat.public_ip
+  description = "VPC Elastic NAT PUBLIC IP"
+  value       = aws_eip.nat.public_ip
 }
 
 ## NAT Gateways (vpc) Outputs
 output "ngw_id" {
-  value = aws_nat_gateway.ngw.id
+  description = "VPC NAT Gateway ID"
+  value       = aws_nat_gateway.ngw.id
 }
 
 output "ngw_allocation_id" {
-  value = aws_nat_gateway.ngw.allocation_id
+  description = "VPC NAT Gateway Allocation ID"
+  value       = aws_nat_gateway.ngw.allocation_id
 }

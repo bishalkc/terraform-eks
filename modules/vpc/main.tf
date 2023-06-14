@@ -9,7 +9,7 @@ resource "aws_vpc" "vpc" {
   instance_tenancy                 = "default"
 
   tags = {
-    Name     = "vpc-${local.project}-${local.environment}"
+    Name     = "vpc-${var.project}-${var.environment}"
     Tier     = "public"
     Role     = "vpc"
     Resource = "vpc"
@@ -27,7 +27,7 @@ resource "aws_subnet" "public" {
   cidr_block        = cidrsubnet(var.base_cidr, 10, count.index)
   depends_on        = [aws_vpc.vpc]
   tags = {
-    Name     = "public-subnet-${local.project}-${local.environment}-${count.index}"
+    Name     = "public-subnet-${var.project}-${var.environment}-${count.index}"
     Tier     = "public"
     Role     = "public"
     Resource = "subnet"
@@ -44,7 +44,7 @@ resource "aws_subnet" "database" {
   cidr_block        = cidrsubnet(var.base_cidr, 11, count.index + 8)
   depends_on        = [aws_vpc.vpc]
   tags = {
-    Name     = "database-subnet-${local.project}-${local.environment}-${count.index}"
+    Name     = "database-subnet-${var.project}-${var.environment}-${count.index}"
     Tier     = "private"
     Role     = "database"
     Resource = "subnet"
@@ -61,7 +61,7 @@ resource "aws_subnet" "svcs" {
   cidr_block        = cidrsubnet(var.base_cidr, 11, count.index + 24)
   depends_on        = [aws_vpc.vpc]
   tags = {
-    Name     = "svcs-subnet-${local.project}-${local.environment}-${count.index}"
+    Name     = "svcs-subnet-${var.project}-${var.environment}-${count.index}"
     Tier     = "private"
     Role     = "svcs"
     Resource = "subnet"
@@ -78,7 +78,7 @@ resource "aws_subnet" "cp" {
   cidr_block        = cidrsubnet(var.base_cidr, 12, count.index + 32)
   depends_on        = [aws_vpc.vpc]
   tags = {
-    Name     = "cp-subnet-${local.project}-${local.environment}-${count.index}"
+    Name     = "cp-subnet-${var.project}-${var.environment}-${count.index}"
     Tier     = "private"
     Role     = "cp"
     Resource = "subnet"
@@ -95,7 +95,7 @@ resource "aws_subnet" "worker" {
   cidr_block        = cidrsubnet(var.base_cidr, 4, count.index + 1)
   depends_on        = [aws_vpc.vpc]
   tags = {
-    Name     = "worker-subnet-${local.project}-${local.environment}-${count.index}"
+    Name     = "worker-subnet-${var.project}-${var.environment}-${count.index}"
     Tier     = "private"
     Role     = "worker"
     Resource = "subnet"
@@ -115,7 +115,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name     = "public-route-table-${local.project}-${local.environment}"
+    Name     = "public-route-table-${var.project}-${var.environment}"
     Tier     = "public"
     Role     = "route"
     Resource = "route_table"
@@ -140,7 +140,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name     = "private-route-table-${local.project}-${local.environment}"
+    Name     = "private-route-table-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "route"
     Resource = "route_table"
@@ -153,7 +153,7 @@ resource "aws_route_table" "private" {
 resource "aws_route_table_association" "rta_public" {
   count = var.az_count
   subnet_id = element(
-    aws_subnet.public.*.id,
+    aws_subnet.public[*].id,
     count.index,
   )
   route_table_id = aws_route_table.public.id
@@ -165,7 +165,7 @@ resource "aws_route_table_association" "rta_public" {
 resource "aws_route_table_association" "rta_database" {
   count = var.az_count
   subnet_id = element(
-    aws_subnet.database.*.id,
+    aws_subnet.database[*].id,
     count.index,
   )
   route_table_id = aws_route_table.private.id
@@ -177,7 +177,7 @@ resource "aws_route_table_association" "rta_database" {
 resource "aws_route_table_association" "rta_cp" {
   count = var.az_count
   subnet_id = element(
-    aws_subnet.cp.*.id,
+    aws_subnet.cp[*].id,
     count.index,
   )
   route_table_id = aws_route_table.private.id
@@ -189,7 +189,7 @@ resource "aws_route_table_association" "rta_cp" {
 resource "aws_route_table_association" "rta_svcs" {
   count = var.az_count
   subnet_id = element(
-    aws_subnet.svcs.*.id,
+    aws_subnet.svcs[*].id,
     count.index,
   )
   route_table_id = aws_route_table.private.id
@@ -201,7 +201,7 @@ resource "aws_route_table_association" "rta_svcs" {
 resource "aws_route_table_association" "rta_worker" {
   count = var.az_count
   subnet_id = element(
-    aws_subnet.worker.*.id,
+    aws_subnet.worker[*].id,
     count.index,
   )
   route_table_id = aws_route_table.private.id
@@ -216,7 +216,7 @@ resource "aws_nat_gateway" "ngw" {
   connectivity_type = "public"
 
   tags = {
-    Name     = "ngw-${local.project}-${local.environment}"
+    Name     = "ngw-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "ngw"
     Resource = "ngw"
@@ -227,7 +227,7 @@ resource "aws_eip" "nat" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.igw]
   tags = {
-    Name     = "ngw-${local.project}-${local.environment}"
+    Name     = "ngw-${var.project}-${var.environment}"
     Tier     = "public"
     Role     = "eip"
     Resource = "eip"
@@ -241,7 +241,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name     = "igw-${local.project}-${local.environment}"
+    Name     = "igw-${var.project}-${var.environment}"
     Tier     = "public"
     Role     = "igw"
     Resource = "igw"

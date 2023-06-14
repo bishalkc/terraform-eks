@@ -3,8 +3,8 @@
 ################################################################################
 
 resource "aws_eks_cluster" "eks" {
-  name                      = local.eks.cluster_name
-  version                   = local.eks.version
+  name                      = var.eks_cluster_name
+  version                   = var.eks_version
   role_arn                  = aws_iam_role.cluster_role.arn
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
@@ -13,7 +13,7 @@ resource "aws_eks_cluster" "eks" {
   }
 
   vpc_config {
-    subnet_ids              = local.vpc.cp_subnet_ids
+    subnet_ids              = var.cp_subnet_ids
     endpoint_private_access = true
     endpoint_public_access  = true
     public_access_cidrs     = ["${local.my_ip}/32"]
@@ -22,7 +22,7 @@ resource "aws_eks_cluster" "eks" {
   encryption_config {
     resources = ["secrets"]
     provider {
-      key_arn = local.kms.kms_key_arn
+      key_arn = var.kms_key_arn
     }
   }
 
@@ -33,7 +33,7 @@ resource "aws_eks_cluster" "eks" {
   }
 
   tags = {
-    Name     = "eks-cluster-${local.project}-${local.environment}"
+    Name     = "eks-cluster-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "eks"
@@ -45,11 +45,11 @@ resource "aws_eks_cluster" "eks" {
 # CLOUD WATCH
 ################################################################################
 resource "aws_cloudwatch_log_group" "eks" {
-  name              = "/aws/eks/${local.project}-${local.environment}/cluster"
+  name              = "/aws/eks/${var.project}-${var.environment}/cluster"
   retention_in_days = 14
 
   tags = {
-    Name     = "/aws/eks/${local.project}-${local.environment}/cluster"
+    Name     = "/aws/eks/${var.project}-${var.environment}/cluster"
     Tier     = "private"
     Role     = "logs"
     Resource = "cloud_watch"
@@ -62,7 +62,7 @@ resource "aws_cloudwatch_log_group" "eks" {
 ################################################################################
 
 resource "aws_iam_role" "cluster_role" {
-  name = "role-cluster-${local.project}-${local.environment}"
+  name = "role-cluster-${var.project}-${var.environment}"
 
   assume_role_policy = <<POLICY
 {
@@ -80,7 +80,7 @@ resource "aws_iam_role" "cluster_role" {
 POLICY
 
   tags = {
-    Name     = "role-eks-${local.project}-${local.environment}"
+    Name     = "role-eks-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
@@ -89,13 +89,13 @@ POLICY
 }
 
 resource "aws_iam_policy" "cluster_role_kms_readwrite_policy" {
-  name        = "policy-eks-kms-readwrite-${local.project}-${local.environment}"
+  name        = "policy-eks-kms-readwrite-${var.project}-${var.environment}"
   path        = "/"
-  description = "Policy for EKS KMS ${local.project} ${local.environment}"
+  description = "Policy for EKS KMS ${var.project} ${var.environment}"
   policy      = file("${path.module}/policies/kms_policy.json")
 
   tags = {
-    Name     = "policy-kms-readwrite-${local.project}-${local.environment}"
+    Name     = "policy-kms-readwrite-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_policy"
@@ -122,7 +122,7 @@ resource "aws_iam_role_policy_attachment" "cluster_role_kms_readwrite" {
 # NODE/WORKER ROLE
 ################################################################################
 resource "aws_iam_role" "worker_role" {
-  name = "role-worker-${local.project}-${local.environment}"
+  name = "role-worker-${var.project}-${var.environment}"
 
   assume_role_policy = <<POLICY
 {
@@ -140,7 +140,7 @@ resource "aws_iam_role" "worker_role" {
 POLICY
 
   tags = {
-    Name     = "role-worker-${local.project}-${local.environment}"
+    Name     = "role-worker-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
@@ -169,9 +169,9 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_readonl
 resource "aws_eks_node_group" "node_group" {
 
   cluster_name    = aws_eks_cluster.eks.name
-  node_group_name = "${local.project}-${local.environment}-worker"
+  node_group_name = "${var.project}-${var.environment}-worker"
   node_role_arn   = aws_iam_role.worker_role.arn
-  subnet_ids      = local.vpc.worker_subnet_ids
+  subnet_ids      = var.worker_subnet_ids
   capacity_type   = "ON_DEMAND"
 
   launch_template {
@@ -200,7 +200,7 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   tags = {
-    Name     = "${local.project}-${local.environment}-worker"
+    Name     = "${var.project}-${var.environment}-worker"
     Tier     = "private"
     Role     = "node"
     Resource = "node_group"
@@ -215,23 +215,23 @@ resource "aws_eks_node_group" "node_group" {
 ## NOTE: EKS Managed Worker Node is currently not compatible with defining Network Interface & IAM Profile Configurations in Launch Template and handles it via the Node Group Resource itself. 12/17/2021
 resource "aws_launch_template" "worker_t3micro_lt" {
 
-  name                    = "lt-${local.project}-${local.environment}-worker"
-  description             = "Launch Template for Managed Node Groups of ${local.project} ${local.environment} with Instance Type t3.micro"
+  name                    = "lt-${var.project}-${var.environment}-worker"
+  description             = "Launch Template for Managed Node Groups of ${var.project} ${var.environment} with Instance Type t3.micro"
   image_id                = data.aws_ami.amazon_linux_2_latest.id
   disable_api_termination = true
   ebs_optimized           = false
-  instance_type           = local.eks.instance_type
+  instance_type           = var.eks_instance_type
   update_default_version  = true
 
   block_device_mappings {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size           = local.eks.volume_size
-      volume_type           = local.eks.volume_type
+      volume_size           = var.eks_volume_size
+      volume_type           = var.eks_volume_type
       delete_on_termination = true
       encrypted             = true
-      kms_key_id            = local.kms.kms_key_arn
+      kms_key_id            = var.kms_key_arn
     }
   }
 
@@ -243,15 +243,15 @@ resource "aws_launch_template" "worker_t3micro_lt" {
     cpu_credits = "unlimited"
   }
 
-  key_name = local.bastion.keypair_name
+  key_name = var.bastion_keypair_name
 
   monitoring {
     enabled = true
   }
 
   vpc_security_group_ids = [
-    local.bastion.public_sg_id,
-    local.bastion.private_sg_id,
+    var.bastion_public_sg_id,
+    var.bastion_private_sg_id,
     aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id
   ]
 
@@ -272,7 +272,7 @@ Content-Type: text/x-shellscript; charset="us-ascii"
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name     = "worker-${local.project}-${local.environment}"
+      Name     = "worker-${var.project}-${var.environment}"
       Tier     = "private"
       Role     = "eks"
       Resource = "ec2"
@@ -282,7 +282,7 @@ Content-Type: text/x-shellscript; charset="us-ascii"
   tag_specifications {
     resource_type = "volume"
     tags = {
-      Name      = "/dev/xvda-worker-${local.project}-${local.environment}"
+      Name      = "/dev/xvda-worker-${var.project}-${var.environment}"
       Encrypted = "true"
       Tier      = "private"
       Role      = "eks"
@@ -309,7 +309,7 @@ resource "aws_iam_openid_connect_provider" "oidc" {
   ]
 
   tags = {
-    Name     = "oidc-${local.project}-${local.environment}"
+    Name     = "oidc-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "openid_connector"
@@ -322,14 +322,14 @@ resource "aws_iam_openid_connect_provider" "oidc" {
 ################################################################################
 ## THESE ARE ADDITIONAL SG RULES FOR THE SECURITY GROUP THAT EKS CLUSTER CREATES AUTOMATICALLY
 resource "aws_security_group_rule" "eks_ingress_public_bastion" {
-  count = local.bastion.public_sg_id != "null" ? 1 : 0
+  count = var.bastion_public_sg_id != "null" ? 1 : 0
 
   type                     = "ingress"
   description              = "HTTPS ingress allowed from Public Bastion SG"
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = local.bastion.public_sg_id
+  source_security_group_id = var.bastion_public_sg_id
   security_group_id        = data.aws_security_group.eks_auto.id
 
   depends_on = [
@@ -338,14 +338,14 @@ resource "aws_security_group_rule" "eks_ingress_public_bastion" {
 }
 
 # resource "aws_security_group_rule" "eks_ingress_private_bastion" {
-#   count = local.bastion.private_sg_id != "null" ? 1 : 0
+#   count = var.bastion_private_sg_id != "null" ? 1 : 0
 
 #   type                     = "ingress"
 #   description              = "HTTPS ingress allowed from Private Bastion SG"
 #   from_port                = 443
 #   to_port                  = 443
 #   protocol                 = "tcp"
-#   source_security_group_id = local.bastion.private_sg_id
+#   source_security_group_id = var.bastion_private_sg_id
 #   security_group_id        = data.aws_security_group.eks_auto.id
 
 #   depends_on = [
@@ -359,7 +359,7 @@ resource "aws_security_group_rule" "eks_ingress_public_bastion" {
 # LB CONTROLLER
 ################################################################################
 data "aws_iam_policy_document" "lb_controrller_role_policy" {
-  count = local.eks.lb_controller ? 1 : 0
+  count = var.eks_lb_controller ? 1 : 0
 
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -379,15 +379,15 @@ data "aws_iam_policy_document" "lb_controrller_role_policy" {
 }
 
 resource "aws_iam_role" "lb_controller_role" {
-  count              = local.eks.lb_controller ? 1 : 0
-  name               = "role-oidc-lb-controller-${local.project}-${local.environment}"
+  count              = var.eks_lb_controller ? 1 : 0
+  name               = "role-oidc-lb-controller-${var.project}-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.lb_controrller_role_policy[count.index].json
   depends_on = [
     aws_iam_openid_connect_provider.oidc,
   ]
 
   tags = {
-    Name     = "role-oidc-lb-controller-${local.project}-${local.environment}"
+    Name     = "role-oidc-lb-controller-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
@@ -396,14 +396,14 @@ resource "aws_iam_role" "lb_controller_role" {
 }
 
 resource "aws_iam_policy" "lb_controller_role_policy" {
-  count       = local.eks.lb_controller ? 1 : 0
-  name        = "policy-oidc-lb-controller-${local.project}-${local.environment}"
+  count       = var.eks_lb_controller ? 1 : 0
+  name        = "policy-oidc-lb-controller-${var.project}-${var.environment}"
   path        = "/"
-  description = "Policy for EKS LoadBalancer Controller of EKS ${local.project} ${local.environment}"
+  description = "Policy for EKS LoadBalancer Controller of EKS ${var.project} ${var.environment}"
   policy      = file("${path.module}/policies/eks_lb_controller_policy.json")
 
   tags = {
-    Name     = "policy-oidc-lb-controller-${local.project}-${local.environment}"
+    Name     = "policy-oidc-lb-controller-${var.project}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_policy"
@@ -411,7 +411,7 @@ resource "aws_iam_policy" "lb_controller_role_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "lb_controller_policy_attachment" {
-  count = local.eks.lb_controller ? 1 : 0
+  count = var.eks_lb_controller ? 1 : 0
 
   policy_arn = aws_iam_policy.lb_controller_role_policy[count.index].arn
   role       = aws_iam_role.lb_controller_role[count.index].name
@@ -425,7 +425,7 @@ resource "aws_iam_role_policy_attachment" "lb_controller_policy_attachment" {
 # LB SERVICE ACCOUNT
 ################################################################################
 resource "kubernetes_service_account_v1" "lb_service_account" {
-  count = local.eks.lb_controller ? 1 : 0
+  count = var.eks_lb_controller ? 1 : 0
   metadata {
     name = "aws-load-balancer-controller"
     labels = {

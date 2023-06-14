@@ -9,12 +9,6 @@ variable "environment" {
   description = "Project Environment"
   type        = string
 }
-variable "tenant" {
-  description = "Project Tenant"
-  type        = string
-  default     = "demo"
-}
-
 variable "enable_cni" {
   description = "Enable CNI Addon"
   type        = bool

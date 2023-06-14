@@ -26,14 +26,6 @@ variable "eks_volume_type" {
   type        = string
   default     = "gp3"
 }
-variable "vpc_id" {
-  description = "Define VPC ID"
-  type        = string
-}
-variable "vpc_cidr_block" {
-  description = "Define VPC CIDR Block"
-  type        = string
-}
 variable "cp_subnet_ids" {
   description = "Define CP Subnet Ids"
   type        = list(string)
@@ -60,8 +52,12 @@ variable "bastion_private_sg_id" {
   type        = string
   default     = "null"
 }
-variable "lb_controller" {
+variable "eks_lb_controller" {
   description = "Create LB Controller"
   type        = bool
   default     = false
+}
+variable "eks_cluster_name" {
+  description = "Name of EKS Cluster"
+  type        = string
 }
