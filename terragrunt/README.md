@@ -8,6 +8,9 @@
 - [x] creates vpc
 - [x] creates bastion host
 - [x] creates eks cluster and supporting roles and infra
+- [x] Secret Manager
+- [x] SSM Parameter store
+- [x] KMS
 - [x] creates databases <!--- optional --->
 
 ### Ensure these are installed and configured
@@ -29,12 +32,15 @@ pre-commit install // make sure you have pre-commit installed
 *The below will create resouces specied on child module in depency order*
 
 *Order Resources are create*
-- VPC
-- KMS/ECR <= *These resources dont have depencies*
-- Bastion Host
-- EKS
-- CNI and EBS Addon
-- LB Controller
+[&check;] VPC
+[&check;] KMS
+[&check;] ECR
+[&check;] Bastion Host
+[&check;] EKS
+[&check;] SSM
+[&check;] Secret Manager
+[&check;] CNI and EBS Addon
+[&check;] LB Controller
 
 ```shell
 cd terragrunt
