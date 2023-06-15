@@ -42,6 +42,7 @@ pre-commit install // make sure you have pre-commit installed
 - [&check;] CNI and EBS Addon
 - [&check;] LB Controller
 
+### *CREATE ALL RESOURCES AT ONCE*
 ```shell
 cd terragrunt
 terragrunt run-all apply
@@ -58,6 +59,10 @@ terragrunt apply
 ##### *SHARED SEVICES*
 ```shell
 cd shared
+cd kms
+terragrunt init
+terragrunt apply
+cd ecr
 terragrunt init
 terragrunt apply
 ```
@@ -72,13 +77,6 @@ terragrunt apply
 ##### *ADDON* <!--- If needed --->
 ```shell
 cd addon
-terragrunt init
-terragrunt apply
-```
-
-##### *ECR* <!--- If needed --->
-```shell
-cd ecr
 terragrunt init
 terragrunt apply
 ```
@@ -100,26 +98,53 @@ terragrunt apply
 ##### *APP* <!--- If needed --->
 ```shell
 cd app
-terraform init
-terraform apply
+terragrunt init
+terragrunt apply
 ```
 
 
 ### *CLEAN UP*
+#### *CLEAN UP ALL AT ONCE*
+```shell
+cd terragrunt
+terragrunt run-all destroy
+```
+
+#### *CLEAN UP ALL INDIVIDUALLY*
 ##### *APP* <!--- If provisioned --->
 ```shell
 cd app
-terra
+terragrunt destroy
+```
+
 ##### *DATABASE* <!--- If provisioned --->
 ```shell
 cd database
-terraform destroy
+terragrunt destroy
 ```
-##### *CLUSTER*
+
+##### *LB CONTROLLER*
 ```shell
-cd eks
-terraform destroy
+cd lbcontroller
+terragrunt destroy
+
 ```
+
+##### *ADDON*
+```shell
+cd addon
+terragrunt destroy
+
+```
+##### *SHARED*
+```shell
+cd shared
+cd kms
+terragrunt destroy
+cd ecr
+terragrunt destroy
+```
+
 ##### *VPC/COMMON*
 ```shell
 cd vpc

@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "../../../modules/kms"
+  source = "../../../../modules/kms"
 }
 
 include "root" {
