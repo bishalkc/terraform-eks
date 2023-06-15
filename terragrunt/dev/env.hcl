@@ -1,21 +1,29 @@
 locals {
-  // Global Variables
+  #------------------------------------------------------
+  # GLOBAL VARIABLES
+  #------------------------------------------------------
   project     = "demo-cluster"
   environment = "dev"
   tenant      = "DC"
 
-  // VPC
+  #------------------------------------------------------
+  # VPC VARIABLES
+  #------------------------------------------------------
   base_cidr          = "10.100.0.0/16"
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
   az_count           = 3
 
-  // Shared
+  #------------------------------------------------------
+  # Shared Services [ECR/KMS] VARIABLES
+  #------------------------------------------------------
   create = {
     ecr = true
     kms = true
   }
 
-  // EKS and Bastion
+  #------------------------------------------------------
+  # EKS AND BASTION VARIABLES
+  #------------------------------------------------------
   bastion = {
     create_public  = true
     create_private = false
@@ -40,7 +48,9 @@ locals {
     volume_type          = "gp3"
   }
 
-  // app specific
+  #------------------------------------------------------
+  # APP VARIABLES
+  #------------------------------------------------------
   app = {
     framework = "drupal"
   }

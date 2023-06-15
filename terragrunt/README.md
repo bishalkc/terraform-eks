@@ -31,7 +31,7 @@ pre-commit install // make sure you have pre-commit installed
 #### *Terragrunt fulfills all the depencies specified in child folders*
 *The below will create resouces specied on child module in depency order*
 
-*Order Resources are create*
+:point_down: *Order Resources are create*
 - [&check;] VPC
 - [&check;] KMS
 - [&check;] ECR
@@ -42,13 +42,15 @@ pre-commit install // make sure you have pre-commit installed
 - [&check;] CNI and EBS Addon
 - [&check;] LB Controller
 
-### *CREATE ALL RESOURCES AT ONCE*
+#### :heavy_exclamation_mark: *BEFORE RUNNING `TERRAGRUNT` PLEASE UPDATE `dev/env.hcl` AS NEEDED* :heavy_exclamation_mark:
+
+##### :warning: *CREATE ALL RESOURCES AT ONCE*
 ```shell
 cd terragrunt
 terragrunt run-all apply
 ```
 
-### *You can also run individually*
+### :scream_cat: *You can also run individually*
 ##### *VPC/COMMON*
 ```shell
 cd vpc
@@ -103,7 +105,7 @@ terragrunt apply
 ```
 
 
-### *CLEAN UP*
+### :exclamation::exclamation::exclamation:*CLEAN UP*:exclamation::exclamation::exclamation:
 #### *CLEAN UP ALL AT ONCE*
 ```shell
 cd terragrunt
@@ -127,20 +129,20 @@ terragrunt destroy
 ```shell
 cd lbcontroller
 terragrunt destroy
-
 ```
 
 ##### *ADDON*
 ```shell
 cd addon
 terragrunt destroy
-
 ```
 ##### *SHARED*
 ```shell
 cd shared
+#KMS
 cd kms
 terragrunt destroy
+#ECR
 cd ecr
 terragrunt destroy
 ```
