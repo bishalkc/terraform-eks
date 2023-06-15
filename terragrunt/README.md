@@ -20,7 +20,7 @@
 * [AWS Cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
 
 ### *We are using terragrunt to build the infrastructure*
-*NOTE:* Learn about [Terragurnt](https://terragrunt.gruntwork.io/)
+*NOTE:* Learn about [Terragrunt](https://terragrunt.gruntwork.io/)
 ### *Infra setup in order*
 ```shell
 git clone https://github.com/bishalkc/terraform-eks.git
