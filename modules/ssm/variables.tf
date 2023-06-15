@@ -36,16 +36,12 @@ variable "data_type" {
   default     = "text"
   type        = string
 }
-variable "value" {
-  description = "The value of the parameter. This value is always marked as sensitive in the Terraform plan output, regardless of type. In Terraform CLI version 0.15 and later, this may require additional configuration handling for certain scenarios. For more information, see the Terraform v0.15 Upgrade Guide.The KMS key id or arn for encrypting a SecureString. ( https://www.terraform.io/upgrade-guides/0-15.html?&_ga=2.264038603.670901932.1623631883-573757115.1588460856#sensitive-output-values )"
-  default     = null
-  type        = string
-}
-variable "key_id" {
+
+variable "kms_id" {
   description = "KMS ID for encryption"
   type        = string
 }
-variable "name" {
+variable "key_value" {
   description = "Name for SSM Parameter"
-  type        = string
+  type        = map(string)
 }

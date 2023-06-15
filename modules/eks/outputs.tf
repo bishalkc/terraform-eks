@@ -24,7 +24,7 @@ output "eks_cluster_name" {
 
 output "eks_cluster_ca_certificate" {
   description = "ARN of EKS Cluster 1"
-  value       = aws_eks_cluster.eks.name
+  value       = aws_eks_cluster.eks.certificate_authority[0].data
 }
 
 output "eks_cluster_platform_version" {

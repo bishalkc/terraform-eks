@@ -42,4 +42,5 @@ module "lbcontroller" {
   # VPC
   eks_cluster_name           = data.terraform_remote_state.eks.outputs.eks_cluster_name
   eks_cluster_ca_certificate = data.terraform_remote_state.eks.outputs.eks_cluster_ca_certificate
+  eks_cluster_endpoint       = data.terraform_remote_state.eks.outputs.eks_cluster_endpoint
 }
