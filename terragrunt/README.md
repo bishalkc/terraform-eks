@@ -33,7 +33,7 @@ pre-commit install // make sure you have pre-commit installed
 
 *Order Resources are create*
 - [&check;] VPC
-- [&check;] KMS\n
+- [&check;] KMS
 - [&check;] ECR
 - [&check;] Bastion Host
 - [&check;] EKS
