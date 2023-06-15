@@ -32,15 +32,15 @@ pre-commit install // make sure you have pre-commit installed
 *The below will create resouces specied on child module in depency order*
 
 *Order Resources are create*
-[&check;] VPC
-[&check;] KMS
-[&check;] ECR
-[&check;] Bastion Host
-[&check;] EKS
-[&check;] SSM
-[&check;] Secret Manager
-[&check;] CNI and EBS Addon
-[&check;] LB Controller
+- [&check;] VPC
+- [&check;] KMS\n
+- [&check;] ECR
+- [&check;] Bastion Host
+- [&check;] EKS
+- [&check;] SSM
+- [&check;] Secret Manager
+- [&check;] CNI and EBS Addon
+- [&check;] LB Controller
 
 ```shell
 cd terragrunt
