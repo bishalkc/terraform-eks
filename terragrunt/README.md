@@ -50,10 +50,16 @@ pre-commit install // make sure you have pre-commit installed
 ##### :warning: *CREATE ALL RESOURCES AT ONCE*
 ```shell
 cd terragrunt
+cd {eks|fargate}
 terragrunt run-all apply
 ```
 
 ### :scream_cat: *You can also run individually*
+
+```shell
+cd terragrunt/{eks|fargate}
+```
+
 ##### *VPC/COMMON*
 ```shell
 cd vpc
