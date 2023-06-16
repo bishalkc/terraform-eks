@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "${get_parent_terragrunt_dir("root")}/../../modules/vpc"
+  source = "../../../modules/vpc"
 }
 
 include "root" {
