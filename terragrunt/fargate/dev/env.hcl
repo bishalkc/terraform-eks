@@ -19,7 +19,7 @@ locals {
   create = {
     ecr = true
     kms = true
-    efs = true // default is false
+    efs = true // required for fargate cluster for pvc and default is false
   }
 
   #------------------------------------------------------

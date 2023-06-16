@@ -5,7 +5,6 @@ locals {
   project     = "demo-cluster"
   environment = "dev"
   tenant      = "DC"
-
   #------------------------------------------------------
   # VPC VARIABLES
   #------------------------------------------------------
@@ -19,6 +18,7 @@ locals {
   create = {
     ecr = true
     kms = true
+    // efs = true require for fargate cluster, default is false
   }
 
   #------------------------------------------------------
