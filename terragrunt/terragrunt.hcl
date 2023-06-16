@@ -7,7 +7,8 @@ locals {
   aws_region  = "us-east-1"
   bucket_name = "demo-cluster-bucket"
   project     = "demo-cluster"
-
+  environment = "dev"
+  tenant      = "DC"
 }
 remote_state {
   # Configure S3 as a backend
@@ -31,6 +32,13 @@ generate "provider" {
   contents  = <<EOF
   provider "aws" {
     region= "${local.aws_region}"
+    default_tags {
+      tags = {
+        Owner       = "${local.project}"
+        Environment = "${local.environment}"
+        Tenant      = "${local.tenant}"
+      }
+    }
   }
   EOF
 }

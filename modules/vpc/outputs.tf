@@ -95,3 +95,8 @@ output "ngw_allocation_id" {
   description = "VPC NAT Gateway Allocation ID"
   value       = aws_nat_gateway.ngw.allocation_id
 }
+
+output "is_fargate" {
+  description = "Is this Fargate"
+  value       = var.is_fargate
+}

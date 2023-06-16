@@ -119,10 +119,96 @@ resource "aws_iam_role_policy_attachment" "cluster_role_kms_readwrite" {
 }
 
 ################################################################################
+# FARGATE PROFILE
+################################################################################
+resource "aws_iam_role" "fargate_role" {
+  count = var.is_fargate ? 1 : 0
+  name  = "role-fargate-${var.project}-${var.environment}"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks-fargate-pods.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+
+  tags = {
+    Name     = "role-worker-${var.project}-${var.environment}"
+    Tier     = "private"
+    Role     = "eks"
+    Resource = "iam_role"
+  }
+
+}
+
+resource "aws_iam_role_policy_attachment" "eks_fargate_pofile_policy" {
+  count      = var.is_fargate ? 1 : 0
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  role       = aws_iam_role.fargate_role[count.index].name
+}
+
+resource "aws_eks_fargate_profile" "fargate_profile" {
+  count = var.is_fargate ? 1 : 0
+
+  cluster_name           = aws_eks_cluster.eks.name
+  fargate_profile_name   = "${var.project}-${var.environment}"
+  pod_execution_role_arn = aws_iam_role.fargate_role[count.index].arn
+
+  subnet_ids = var.worker_subnet_ids
+
+  selector {
+    namespace = "kube-system"
+  }
+  selector {
+    namespace = var.environment
+  }
+
+}
+
+# data "aws_eks_cluster_auth" "eks" {
+#   count = var.is_fargate ? 1 : 0
+#   name = aws_eks_cluster.eks.id
+# }
+# resource "null_resource" "k8s_patcher" {
+#   count = var.is_fargate ? 1 : 0
+#   depends_on = [aws_eks_fargate_profile.kube-system]
+#   triggers = {
+#     endpoint = aws_eks_cluster.eks.endpoint
+#     ca_crt   = base64decode(aws_eks_cluster.eks.certificate_authority[0].data)
+#     token    = data.aws_eks_cluster_auth.eks.token
+#   }
+#   provisioner "local-exec" {
+#     command = <<EOH
+#   cat >/tmp/ca.crt <<EOF
+#   ${base64decode(aws_eks_cluster.eks.certificate_authority[0].data)}
+#   EOF
+#   kubectl \
+#     --server="${aws_eks_cluster.eks.endpoint}" \
+#     --certificate_authority=/tmp/ca.crt \
+#     patch deployment coredns \
+#     -n kube-system --type json \
+#     -p='[{"op": "remove", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type"}]
+#   EOH
+#   }
+#   lifecycle {
+#     ignore_changes = [triggers]
+#   }
+
+# }
+################################################################################
 # NODE/WORKER ROLE
 ################################################################################
 resource "aws_iam_role" "worker_role" {
-  name = "role-worker-${var.project}-${var.environment}"
+  count = var.is_fargate ? 0 : 1
+  name  = "role-worker-${var.project}-${var.environment}"
 
   assume_role_policy = <<POLICY
 {
@@ -149,33 +235,40 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "worker_role_amazon_eks_worker_node_policy" {
+  count = var.is_fargate ? 0 : 1
+
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.worker_role.name
+  role       = aws_iam_role.worker_role[count.index].name
 }
 
 resource "aws_iam_role_policy_attachment" "worker_role_amazon_ec2_container_registry_readonly" {
+  count = var.is_fargate ? 0 : 1
+
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.worker_role.name
+  role       = aws_iam_role.worker_role[count.index].name
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_readonly" {
+  count = var.is_fargate ? 0 : 1
+
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.worker_role.name
+  role       = aws_iam_role.worker_role[count.index].name
 }
 
 ################################################################################
 # NODE/WORKER GROUP
 ################################################################################
 resource "aws_eks_node_group" "node_group" {
+  count = var.is_fargate ? 0 : 1
 
   cluster_name    = aws_eks_cluster.eks.name
   node_group_name = "${var.project}-${var.environment}-worker"
-  node_role_arn   = aws_iam_role.worker_role.arn
+  node_role_arn   = aws_iam_role.worker_role[count.index].arn
   subnet_ids      = var.worker_subnet_ids
   capacity_type   = "ON_DEMAND"
 
   launch_template {
-    id      = aws_launch_template.worker_t3micro_lt.id
+    id      = aws_launch_template.worker_t3micro_lt[count.index].id
     version = "$Latest"
   }
 
@@ -214,6 +307,7 @@ resource "aws_eks_node_group" "node_group" {
 
 ## NOTE: EKS Managed Worker Node is currently not compatible with defining Network Interface & IAM Profile Configurations in Launch Template and handles it via the Node Group Resource itself. 12/17/2021
 resource "aws_launch_template" "worker_t3micro_lt" {
+  count = var.is_fargate ? 0 : 1
 
   name                    = "lt-${var.project}-${var.environment}-worker"
   description             = "Launch Template for Managed Node Groups of ${var.project} ${var.environment} with Instance Type t3.micro"

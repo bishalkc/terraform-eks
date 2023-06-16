@@ -25,3 +25,8 @@ variable "assign_generated_ipv6_cidr_block" {
   type        = bool
   default     = true
 }
+variable "is_fargate" {
+  description = "Is it Fargate EKS?"
+  type        = bool
+  default     = false
+}

@@ -44,7 +44,7 @@ output "eks_cluster_endpoint" {
 
 
 ## IAM outputs
-
+### EKS CLUSTER
 output "iam_cluster_role_arn" {
   description = "ARN of EKS IAM Role"
   value       = aws_iam_role.cluster_role.arn
@@ -60,36 +60,65 @@ output "iam_cluster_role_name" {
   value       = aws_iam_role.cluster_role.name
 }
 
+### WORKER ROLE
+
 output "iam_worker_role_arn" {
-  description = "ARN of EKS worker 1 IAM Role"
-  value       = aws_iam_role.worker_role.arn
+  description = "ARN of EKS worker IAM Role"
+  value       = try(aws_iam_role.worker_role[*].arn, null)
 }
 
 output "iam_worker_role_id" {
-  description = "ID of EKS worker 1 IAM Role"
-  value       = aws_iam_role.worker_role.id
+  description = "ID of EKS worker IAM Role"
+  value       = try(aws_iam_role.worker_role[*].id, null)
 }
 
 output "iam_worker_role_name" {
-  description = "Name of EKS worker 1 IAM Role"
-  value       = aws_iam_role.worker_role.name
+  description = "Name of EKS worker IAM Role"
+  value       = try(aws_iam_role.worker_role[*].name, null)
 }
+
+### FARGATE ROLE
+output "iam_fargate_profile_arn" {
+  description = "ARN of EKS FARGATE PROFILE"
+  value       = try(aws_eks_fargate_profile.fargate_profile[*].arn, null)
+}
+
+output "iam_fargate_profile_id" {
+  description = "ID of EKS FARGATE PROFILE"
+  value       = try(aws_eks_fargate_profile.fargate_profile[*].id, null)
+}
+
+output "iam_fargate_role_arn" {
+  description = "ARN of EKS FARGATE IAM Role"
+  value       = try(aws_iam_role.fargate_role[*].arn, null)
+}
+
+output "iam_fargate_role_id" {
+  description = "ID of EKS FARGATE IAM Role"
+  value       = try(aws_iam_role.fargate_role[*].id, null)
+}
+
+output "iam_fargate_role_name" {
+  description = "Name of EKS FARGATE IAM Role"
+  value       = try(aws_iam_role.fargate_role[*].name, null)
+}
+
 
 ## Launch Template outputs
 
 output "launch_worker_t3micro_lt_arn" {
   description = "ARN  of Launch Template for EKS-1 NodeGroup-1"
-  value       = aws_launch_template.worker_t3micro_lt.arn
+  value       = try(aws_launch_template.worker_t3micro_lt[*].arn, null)
 }
 
 output "launch_worker_t3micro_lt_id" {
   description = "ID of Launch Template for EKS-1 NodeGroup-1"
-  value       = aws_launch_template.worker_t3micro_lt.id
+  value       = try(aws_launch_template.worker_t3micro_lt[*].id, null)
 }
 
 output "launch_worker_t3micro_lt_latest_version" {
   description = "Latest Version of Launch Template for EKS-1 NodeGroup-1"
-  value       = aws_launch_template.worker_t3micro_lt.latest_version
+  value       = try(aws_launch_template.worker_t3micro_lt[*].latest_version, null)
 }
 
 
@@ -97,17 +126,17 @@ output "launch_worker_t3micro_lt_latest_version" {
 
 output "node_group_arn" {
   description = "ARN of EKS NodeGroup"
-  value       = aws_eks_node_group.node_group[*].id
+  value       = try(aws_eks_node_group.node_group[*].id, null)
 }
 
 output "node_group_id" {
   description = "ID of EKS NodeGroup"
-  value       = aws_eks_node_group.node_group[*].id
+  value       = try(aws_eks_node_group.node_group[*].id, null)
 }
 
 output "node_group_status" {
   description = "Status of EKS NodeGroup"
-  value       = aws_eks_node_group.node_group[*].status
+  value       = try(aws_eks_node_group.node_group[*].status, null)
 }
 
 # OIDC Outputs

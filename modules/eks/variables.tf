@@ -69,3 +69,9 @@ variable "vpc_private_subnet" {
   description = "Creates Public Subnet for Bastion"
   type        = string
 }
+
+variable "is_fargate" {
+  description = "Is it Fargate"
+  type        = bool
+  default     = false
+}

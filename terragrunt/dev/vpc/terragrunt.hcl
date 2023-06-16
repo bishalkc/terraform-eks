@@ -20,4 +20,5 @@ inputs = {
   base_cidr          = include.env.locals.base_cidr
   az_count           = include.env.locals.az_count
   availability_zones = include.env.locals.availability_zones
+  is_fargate         = true
 }

@@ -26,12 +26,15 @@ resource "aws_subnet" "public" {
   availability_zone = var.availability_zones[count.index]
   cidr_block        = cidrsubnet(var.base_cidr, 10, count.index)
   depends_on        = [aws_vpc.vpc]
-  tags = {
-    Name     = "public-subnet-${var.project}-${var.environment}-${count.index}"
-    Tier     = "public"
-    Role     = "public"
-    Resource = "subnet"
-  }
+  tags = merge(
+    {
+      Name     = "public-subnet-${var.project}-${var.environment}-${count.index}"
+      Tier     = "public"
+      Role     = "public"
+      Resource = "subnet"
+    },
+    var.is_fargate ? local.fargate_public_subnet_tags : {}
+  )
 }
 
 ################################################################################
@@ -43,12 +46,15 @@ resource "aws_subnet" "database" {
   availability_zone = var.availability_zones[count.index]
   cidr_block        = cidrsubnet(var.base_cidr, 11, count.index + 8)
   depends_on        = [aws_vpc.vpc]
-  tags = {
-    Name     = "database-subnet-${var.project}-${var.environment}-${count.index}"
-    Tier     = "private"
-    Role     = "database"
-    Resource = "subnet"
-  }
+  tags = merge(
+    {
+      Name     = "database-subnet-${var.project}-${var.environment}-${count.index}"
+      Tier     = "private"
+      Role     = "database"
+      Resource = "subnet"
+    },
+    var.is_fargate ? local.fargate_private_subnet_tags : {}
+  )
 }
 
 ################################################################################
@@ -60,12 +66,15 @@ resource "aws_subnet" "svcs" {
   availability_zone = var.availability_zones[count.index]
   cidr_block        = cidrsubnet(var.base_cidr, 11, count.index + 24)
   depends_on        = [aws_vpc.vpc]
-  tags = {
-    Name     = "svcs-subnet-${var.project}-${var.environment}-${count.index}"
-    Tier     = "private"
-    Role     = "svcs"
-    Resource = "subnet"
-  }
+  tags = merge(
+    {
+      Name     = "svcs-subnet-${var.project}-${var.environment}-${count.index}"
+      Tier     = "private"
+      Role     = "svcs"
+      Resource = "subnet"
+    },
+    var.is_fargate ? local.fargate_private_subnet_tags : {}
+  )
 }
 
 ################################################################################
@@ -77,12 +86,15 @@ resource "aws_subnet" "cp" {
   availability_zone = var.availability_zones[count.index]
   cidr_block        = cidrsubnet(var.base_cidr, 12, count.index + 32)
   depends_on        = [aws_vpc.vpc]
-  tags = {
-    Name     = "cp-subnet-${var.project}-${var.environment}-${count.index}"
-    Tier     = "private"
-    Role     = "cp"
-    Resource = "subnet"
-  }
+  tags = merge(
+    {
+      Name     = "cp-subnet-${var.project}-${var.environment}-${count.index}"
+      Tier     = "private"
+      Role     = "cp"
+      Resource = "subnet"
+    },
+    var.is_fargate ? local.fargate_private_subnet_tags : {}
+  )
 }
 
 ################################################################################
@@ -94,12 +106,15 @@ resource "aws_subnet" "worker" {
   availability_zone = var.availability_zones[count.index]
   cidr_block        = cidrsubnet(var.base_cidr, 4, count.index + 1)
   depends_on        = [aws_vpc.vpc]
-  tags = {
-    Name     = "worker-subnet-${var.project}-${var.environment}-${count.index}"
-    Tier     = "private"
-    Role     = "worker"
-    Resource = "subnet"
-  }
+  tags = merge(
+    {
+      Name     = "worker-subnet-${var.project}-${var.environment}-${count.index}"
+      Tier     = "private"
+      Role     = "worker"
+      Resource = "subnet"
+    },
+    var.is_fargate ? local.fargate_private_subnet_tags : {}
+  )
 }
 
 ################################################################################

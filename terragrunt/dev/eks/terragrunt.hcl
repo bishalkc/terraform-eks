@@ -25,6 +25,7 @@ inputs = {
   eks_instance_type = include.env.locals.eks.instance_type
   eks_volume_size   = include.env.locals.eks.volume_size
   eks_volume_type   = include.env.locals.eks.volume_type
+  is_fargate        = dependency.vpc.outputs.is_fargate
 
   # VPC Values
   cp_subnet_ids      = dependency.vpc.outputs.cp
@@ -49,16 +50,18 @@ dependency "vpc" {
   mock_outputs_merge_with_state = true
 
   mock_outputs = {
-    cp     = ["cp-subnet-123", "cp-subnet-456"]
-    worker = ["worker-subnet-123", "worker-subnet-456"]
-    vpc_id = "cp-subnet-456"
-    public = ["vpc-private-subnet-123"]
-    svcs   = ["vpc-public-subnet-123"]
+    cp         = ["cp-subnet-123", "cp-subnet-456"]
+    worker     = ["worker-subnet-123", "worker-subnet-456"]
+    vpc_id     = "cp-subnet-456"
+    public     = ["vpc-private-subnet-123"]
+    svcs       = ["vpc-public-subnet-123"]
+    is_fargate = false
   }
 }
 
 dependency "kms" {
-  config_path = "../kms"
+  config_path = "../shared/kms"
+
   mock_outputs = {
     kms_key_arn = ["arn:aws:kms:us-east-1:${get_aws_account_id()}:key/1234abcd-12ab-34cd-56ef-123456789011"]
 
