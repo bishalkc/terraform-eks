@@ -2,4 +2,4 @@
 *.keypairs*
 *.terraform*
 *.terragrunt-cache*
-terragrunt/backent.tf
+*backend.tf*
