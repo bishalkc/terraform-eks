@@ -20,9 +20,10 @@ inputs = {
   kms_id      = dependency.kms.outputs.kms_key_id[0]
   prefix      = "v1"
   secret_string = {
-    "user"     = "bkc",
-    "password" = "value"
-    "host"     = "blah"
+    "user"     = "demo-cluster-user",
+    "password" = "demo-cluster-password"
+    "host"     = "demo-cluster-host"
+    "dbname"   = "demo-cluster-dbname"
   }
 }
 

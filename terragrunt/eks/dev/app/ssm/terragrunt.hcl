@@ -22,10 +22,11 @@ inputs = {
   kms_id      = dependency.kms.outputs.kms_key_id[0]
 
   key_value = {
-    "bkc"  = "www.bkc.com",
-    "bkc1" = "www.bkc1.com",
-    "bkc2" = "www.bkc2.com",
-    "bkc3" = "www.bkc3.com"
+    "name"        = include.env.locals.project,
+    "environment" = include.env.locals.environment,
+    "framework"   = include.env.locals.app.framework
+    "api_key"     = include.env.locals.app.api_key
+    "hash_key"    = include.env.locals.app.hash_key
   }
 }
 
