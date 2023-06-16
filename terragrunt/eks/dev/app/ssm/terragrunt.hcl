@@ -14,8 +14,6 @@ include "env" {
   expose = true
 }
 
-
-
 inputs = {
   project     = include.env.locals.project
   environment = include.env.locals.environment

@@ -44,7 +44,6 @@ inputs = {
   create_private_bastion = include.env.locals.bastion.create_private
 }
 
-
 dependency "vpc" {
   config_path = "../vpc"
 

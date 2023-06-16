@@ -34,8 +34,6 @@ inputs = {
 dependency "eks" {
   config_path = "../eks"
 
-  mock_outputs_merge_with_state = true
-
   mock_outputs = {
     oidc_url         = "https://oidc.eks-us-east-1.amazonaws.com/id/169841B48D5B8A662A4C7AOE2B101423"
     oidc_arn         = "arn:aws:eks-us-east-1:${get_aws_account_id()}:cluster/oidc-demo"

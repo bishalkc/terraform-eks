@@ -47,8 +47,6 @@ inputs = {
 dependency "vpc" {
   config_path = "../vpc"
 
-  mock_outputs_merge_with_state = true
-
   mock_outputs = {
     cp         = ["cp-subnet-123", "cp-subnet-456", "cp-subnet-789"]
     worker     = ["worker-subnet-123", "worker-subnet-456", "worker-subnet-789"]
