@@ -49,9 +49,9 @@ dependency "vpc" {
   config_path = "../vpc"
 
   mock_outputs = {
-    cp         = ["cp-subnet-123", "cp-subnet-456"]
-    worker     = ["worker-subnet-123", "worker-subnet-456"]
-    vpc_id     = "cp-subnet-456"
+    cp         = ["cp-subnet-123", "cp-subnet-456", "cp-subnet-789"]
+    worker     = ["worker-subnet-123", "worker-subnet-456", "worker-subnet-789"]
+    vpc_id     = "mock-vpc-ie-456"
     public     = ["vpc-private-subnet-123"]
     svcs       = ["vpc-public-subnet-123"]
     is_fargate = true
