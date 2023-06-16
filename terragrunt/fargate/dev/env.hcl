@@ -5,7 +5,7 @@ locals {
   project     = "demo-fargate-cluster"
   environment = "dev"
   tenant      = "DC"
-
+  framework   = "shared"
   #------------------------------------------------------
   # VPC VARIABLES
   #------------------------------------------------------

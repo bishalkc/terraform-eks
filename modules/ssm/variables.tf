@@ -36,7 +36,6 @@ variable "data_type" {
   default     = "text"
   type        = string
 }
-
 variable "kms_id" {
   description = "KMS ID for encryption"
   type        = string

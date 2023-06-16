@@ -17,9 +17,11 @@ include "env" {
 inputs = {
   project               = include.env.locals.project
   environment           = include.env.locals.environment
+  framework             = include.env.locals.framework
   eks_security_group_id = dependency.eks.outputs.eks_security_group_id
   worker_subnet_ids     = dependency.vpc.outputs.worker
   create_efs            = include.env.locals.create.efs
+  kms_id                = dependency.kms.outputs.kms_key_id[0]
 }
 
 dependency "eks" {
@@ -40,5 +42,12 @@ dependency "vpc" {
     public     = ["vpc-private-subnet-123"]
     svcs       = ["vpc-public-subnet-123"]
     is_fargate = true
+  }
+}
+
+dependency "kms" {
+  config_path = "../shared/kms"
+  mock_outputs = {
+    kms_key_id = ["1234abcd-12ab-34cd-56ef-123456789011"]
   }
 }
