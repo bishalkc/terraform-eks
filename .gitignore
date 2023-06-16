@@ -1,3 +1,5 @@
 *.DS_store*
 *.keypairs*
 *.terraform*
+*.terragrunt-cache*
+*backend.tf*

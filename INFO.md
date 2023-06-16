@@ -6,8 +6,8 @@ Open Source system/platform for automating deployment, scaling and management of
 
 ## What it can do?
 
-- Networking - provides a frameowkr for managing and controlling containers' network communications. 
-- Security - provides features that allow to build more secure applications. 
+- Networking - provides a frameowkr for managing and controlling containers' network communications.
+- Security - provides features that allow to build more secure applications.
 - Configuration Management - Helps manage application configuration and pass configuration data to containers.
 - ...and much more!
 
