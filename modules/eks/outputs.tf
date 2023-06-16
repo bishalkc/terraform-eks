@@ -148,6 +148,12 @@ output "oidc_url" {
   description = "URL of EKS OIDC"
   value       = aws_iam_openid_connect_provider.oidc.url
 }
+
+#EKS Auto Generate Security group
+output "eks_security_group_id" {
+  description = "EKS Auto Generated Security Group ID"
+  value       = try(data.aws_security_group.eks_auto.id, null)
+}
 # Bastion  Outputs
 output "bastion_keypair_name" {
   description = "Bastion KeyPair Name"
