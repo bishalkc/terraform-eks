@@ -19,6 +19,7 @@ locals {
   create = {
     ecr = true
     kms = true
+    efs = true // default is false
   }
 
   #------------------------------------------------------
