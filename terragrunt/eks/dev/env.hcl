@@ -53,5 +53,7 @@ locals {
   #------------------------------------------------------
   app = {
     framework = "drupal"
+    api_key   = "6464-464adfasd-164afdd-64fdad"
+    hash_key  = "ADFADF465643SAFTWAF"
   }
 }
