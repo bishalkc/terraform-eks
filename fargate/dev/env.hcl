@@ -46,6 +46,7 @@ locals {
     instance_type        = "t3.medium"
     volume_size          = 20
     volume_type          = "gp3"
+    is_fargate           = true // default is false
   }
 
   #------------------------------------------------------

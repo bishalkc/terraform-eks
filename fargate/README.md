@@ -4,7 +4,7 @@
 - [x] EKS Managed
 - [x] EKS Fargate
 
-*NOTE*: `is_fargate` true | false determines the type of cluster
+*NOTE*: `is_fargate` ==true== | ==false== determines the type of cluster
 
 
 ### What it does
@@ -14,7 +14,7 @@
 - [x] Secret Manager
 - [x] SSM Parameter store
 - [x] KMS
-- [x] creates databases <!--- optional --->
+- [x] creates databases <sup>*<!--- optional --->*</sup>
 
 ### Ensure these are installed and configured
 * [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
@@ -42,10 +42,9 @@ pre-commit install // make sure you have pre-commit installed
 - [&check;] EKS
 - [&check;] SSM
 - [&check;] Secret Manager
-- [&check;] CNI and EBS Addon
 - [&check;] LB Controller
 
-#### :heavy_exclamation_mark: *BEFORE RUNNING `TERRAGRUNT` PLEASE UPDATE `dev/env.hcl` AS NEEDED* :heavy_exclamation_mark:
+#### :heavy_exclamation_mark: *BEFORE RUNNING `TERRAGRUNT` PLEASE UPDATE `{ENV}/env.hcl` AS NEEDED* :heavy_exclamation_mark:
 
 ##### :warning: *CREATE ALL RESOURCES AT ONCE*
 ```shell
@@ -79,28 +78,28 @@ terragrunt init
 terragrunt apply
 ```
 
-##### *ADDON* <!--- If needed --->
+##### *ADDON* <sup>*<!--- If needed --->*</sup>
 ```shell
 cd addon
 terragrunt init
 terragrunt apply
 ```
 
-##### *LB COONTROLLER* <!--- If needed --->
+##### *LB COONTROLLER* <sup>*<!--- If needed --->*</sup>
 ```shell
 cd lbcontroller
 terragrunt init
 terragrunt apply
 ```
 
-##### *DATABASE* <!--- If needed --->
+##### *DATABASE* <sup>*<!--- If needed --->*</sup>
 ```shell
 cd database
 terragrunt init
 terragrunt apply
 ```
 
-##### *APP* <!--- If needed --->
+##### *APP* <sup>*<!--- If needed --->*</sup>
 ```shell
 cd app
 terragrunt init
@@ -116,13 +115,13 @@ terragrunt run-all destroy
 ```
 
 #### *CLEAN UP ALL INDIVIDUALLY*
-##### *APP* <!--- If provisioned --->
+##### *APP* <sup>*<!--- If provisioned --->*</sup>
 ```shell
 cd app
 terragrunt destroy
 ```
 
-##### *DATABASE* <!--- If provisioned --->
+##### *DATABASE* <sup>*<!--- If provisioned --->*</sup>
 ```shell
 cd database
 terragrunt destroy
