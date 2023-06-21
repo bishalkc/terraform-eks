@@ -9,11 +9,6 @@ variable "environment" {
   description = "Project Environment"
   type        = string
 }
-variable "create_ecr" {
-  description = "Creates ECR"
-  type        = bool
-  default     = true
-}
 variable "worker_subnet_ids" {
   description = "Define Worker Subnet Ids"
   type        = list(string)
@@ -27,8 +22,6 @@ variable "eks_security_group_id" {
   description = "Auto generated EKS Security Group ID"
   type        = string
 }
-
-// FOR Creating SSM with efs_id
 variable "description" {
   description = "The description of the parameter."
   default     = "Parameter Stores"
