@@ -5,6 +5,7 @@ locals {
   project     = "demo-cluster"
   environment = "dev"
   tenant      = "DC"
+  aws_region  = "us-east-1"
   #------------------------------------------------------
   # VPC VARIABLES
   #------------------------------------------------------

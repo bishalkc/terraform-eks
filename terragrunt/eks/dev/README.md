@@ -1,7 +1,7 @@
-### This repo bootstraps AWS cloud with EKS Fargate cluster
+### This repo bootstraps AWS cloud with EKS cluster
 
 #### Supported types of Cluster
-- [x] EKS Fargate
+- [x] EKS Managed
 
 *NOTE*: `is_fargate` ==true== | ==false== determines the type of cluster
 
@@ -47,7 +47,7 @@ pre-commit install // make sure you have pre-commit installed
 
 ##### :warning: *CREATE ALL RESOURCES AT ONCE*
 ```shell
-cd terragrunt/fargate
+cd terragrunt/eks
 terragrunt run-all apply
 ```
 

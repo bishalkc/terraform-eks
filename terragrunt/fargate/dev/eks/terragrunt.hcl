@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "../../../../modules/eks"
+  source = "${get_path_to_repo_root()}//modules/eks"
 }
 
 include "root" {

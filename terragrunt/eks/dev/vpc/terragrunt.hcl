@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "../../../../modules/vpc"
+  source = "${get_path_to_repo_root()}//modules/vpc"
 }
 
 include "root" {

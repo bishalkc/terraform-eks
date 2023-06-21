@@ -21,21 +21,21 @@ resource "aws_efs_file_system" "efs" {
 # EFS TARGET
 ################################################################################
 
-resource "aws_efs_mount_target" "zone-a" {
+resource "aws_efs_mount_target" "zone_a" {
   count = var.create_efs ? 1 : 0
 
   file_system_id  = aws_efs_file_system.efs[count.index].id
   subnet_id       = var.worker_subnet_ids[0]
   security_groups = [var.eks_security_group_id]
 }
-resource "aws_efs_mount_target" "zone-b" {
+resource "aws_efs_mount_target" "zone_b" {
   count = var.create_efs ? 1 : 0
 
   file_system_id  = aws_efs_file_system.efs[count.index].id
   subnet_id       = var.worker_subnet_ids[1]
   security_groups = [var.eks_security_group_id]
 }
-resource "aws_efs_mount_target" "zone-c" {
+resource "aws_efs_mount_target" "zone_c" {
   count = var.create_efs ? 1 : 0
 
   file_system_id  = aws_efs_file_system.efs[count.index].id

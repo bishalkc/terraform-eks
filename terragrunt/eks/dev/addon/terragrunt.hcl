@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "../../../../modules/addon"
+  source = "${get_path_to_repo_root()}//modules/addon"
 }
 
 include "root" {

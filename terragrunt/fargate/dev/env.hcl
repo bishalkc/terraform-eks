@@ -6,6 +6,7 @@ locals {
   environment = "dev"
   tenant      = "DC"
   framework   = "shared"
+  aws_region  = "us-east-1"
   #------------------------------------------------------
   # VPC VARIABLES
   #------------------------------------------------------
