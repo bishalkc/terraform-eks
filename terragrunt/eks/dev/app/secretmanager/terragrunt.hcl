@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "../../../../../modules/secretmanager"
+  source = "${get_path_to_repo_root()}//modules/secretmanager"
 }
 
 include "root" {

@@ -2,7 +2,7 @@
 # TERRAFORM STATE
 #------------------------------------------------------
 terraform {
-  source = "../../../../../modules/ssm"
+  source = ".${get_path_to_repo_root()}//modules/ssm"
 }
 
 include "root" {
