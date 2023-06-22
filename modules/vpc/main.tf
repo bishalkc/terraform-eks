@@ -33,7 +33,7 @@ resource "aws_subnet" "public" {
       Role     = "public"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_public_subnet_tags : {}
+    local.eks_public_subnet_tags
   )
 }
 
@@ -53,7 +53,7 @@ resource "aws_subnet" "database" {
       Role     = "database"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -73,7 +73,7 @@ resource "aws_subnet" "svcs" {
       Role     = "svcs"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -93,7 +93,7 @@ resource "aws_subnet" "cp" {
       Role     = "cp"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -113,7 +113,7 @@ resource "aws_subnet" "worker" {
       Role     = "worker"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
