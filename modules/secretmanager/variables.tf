@@ -32,7 +32,7 @@ variable "secret_string" {
   description = " Secrets to populate"
   type        = map(string)
 }
-variable "prefix" {
+variable "suffix" {
   description = "Adding prefix to Secret Manager name"
   type        = string
 }
