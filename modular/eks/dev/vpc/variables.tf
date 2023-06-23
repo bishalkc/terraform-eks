@@ -1,3 +1,8 @@
+variable "vpc_name" {
+  description = "VPC Name"
+  type        = string
+}
+
 variable "base_cidr" {
   description = "Base CIDR for VPC"
   type        = string

@@ -17,12 +17,13 @@ locals {
   environment = local.env.locals.environment
   aws_region  = local.env.locals.aws_region
   tenant      = local.env.locals.tenant
+  vpc_name    = local.env.locals.vpc.name
 }
 remote_state {
   # Configure S3 as a backend
   backend = "s3"
   config = {
-    bucket  = "tf-${local.environment}-${local.project}-${get_aws_account_id()}"
+    bucket  = "tf-${local.vpc_name}-${local.project}-${local.environment}-${get_aws_account_id()}"
     region  = "us-east-1"
     key     = "${path_relative_to_include()}/terraform.tfstate"
     encrypt = true
