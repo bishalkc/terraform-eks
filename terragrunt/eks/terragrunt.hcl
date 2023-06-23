@@ -1,16 +1,7 @@
 #------------------------------------------------------
 # TERRAFORM STATE
 #------------------------------------------------------
-// locals {
-//   # Automatically load environment-level variables
-//   # Extract the variables we need for easy access
-//   aws_region  = "us-east-1"
-//   project     = "demo-cluster"
-//   environment = "dev"
-//   tenant      = "DC"
-// }
 locals {
-  // common_deps = "${get_terragrunt_dir()}/${path_relative_from_include()}/env.hcl"
   # Automatically load account-level variables
   env         = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   project     = local.env.locals.project

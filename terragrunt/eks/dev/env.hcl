@@ -2,10 +2,11 @@ locals {
   #------------------------------------------------------
   # GLOBAL VARIABLES
   #------------------------------------------------------
-  project     = "demo-app"
-  environment = "dev"
-  tenant      = "DC"
-  aws_region  = "us-east-1"
+  cluster_name = "demo-cluster"
+  project      = "demo-app"
+  environment  = "dev"
+  tenant       = "DC"
+  aws_region   = "us-east-1"
   #------------------------------------------------------
   # VPC VARIABLES
   #------------------------------------------------------
