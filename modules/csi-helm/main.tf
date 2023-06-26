@@ -7,6 +7,11 @@ resource "helm_release" "secret_store_csi_driver" {
   chart      = "secrets-store-csi-driver"
   namespace  = "kube-system"
 
+  set {
+    name  = "syncSecret.enabled"
+    value = "true"
+  }
+
 }
 resource "helm_release" "secrets_provider_aws" {
   name       = "secrets-provider-aws"
