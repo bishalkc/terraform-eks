@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
 
   statement {
 
-    sid = "SSMAccess"
+    sid = "SSMDescribeAccess"
 
     actions = [
       "ssm:DescribeParameters"
