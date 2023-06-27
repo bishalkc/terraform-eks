@@ -80,3 +80,16 @@ resource "kubernetes_service_account_v1" "lb_service_account" {
   automount_service_account_token = true
   depends_on                      = [aws_iam_role.lb_controller_role]
 }
+
+
+# ################################################################################
+# # LB CONTROLLER HELM
+# ################################################################################
+
+# resource "helm_release" "secrets_provider_aws" {
+#   name       = "eks"
+#   repository = "https://aws.github.io/eks-charts"
+#   chart      = "aws-load-balancer-controller"
+#   namespace  = "kube-system"
+#   depends_on = [kubernetes_service_account_v1.lb_service_account]
+# }

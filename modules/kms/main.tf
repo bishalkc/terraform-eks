@@ -1,13 +1,15 @@
 ################################################################################
-# KMS KEY
+# KMS
 ################################################################################
 resource "aws_kms_key" "kms" {
-  count               = var.create_kms ? 1 : 0
-  description         = "KMS Key for ${var.project} ${var.environment}"
-  is_enabled          = true
-  enable_key_rotation = true
-  key_usage           = "ENCRYPT_DECRYPT"
-  policy              = data.aws_iam_policy_document.kms_policy[count.index].json
+  count                   = var.create_kms ? 1 : 0
+  description             = "KMS Key for ${var.project} ${var.environment}"
+  is_enabled              = true
+  enable_key_rotation     = true
+  key_usage               = "ENCRYPT_DECRYPT"
+  deletion_window_in_days = 7
+
+  policy = data.aws_iam_policy_document.kms_policy[count.index].json
   tags = {
     Name     = "kms-key-${var.project}-${var.environment}"
     Tier     = "private"

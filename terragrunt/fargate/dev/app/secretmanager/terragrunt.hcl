@@ -18,7 +18,8 @@ inputs = {
   project     = include.env.locals.project
   environment = include.env.locals.environment
   kms_id      = dependency.kms.outputs.kms_key_id[0]
-  prefix      = "v1"
+  suffix      = include.env.locals.app.secret_manager_suffix
+
   secret_string = {
     "user"     = "demo-cluster-user",
     "password" = "demo-cluster-password"

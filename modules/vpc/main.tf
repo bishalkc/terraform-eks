@@ -9,7 +9,7 @@ resource "aws_vpc" "vpc" {
   instance_tenancy                 = "default"
 
   tags = {
-    Name     = "vpc-${var.project}-${var.environment}"
+    Name     = "vpc-${var.vpc_name}-${var.environment}"
     Tier     = "public"
     Role     = "vpc"
     Resource = "vpc"
@@ -28,12 +28,12 @@ resource "aws_subnet" "public" {
   depends_on        = [aws_vpc.vpc]
   tags = merge(
     {
-      Name     = "public-subnet-${var.project}-${var.environment}-${count.index}"
+      Name     = "public-subnet-${var.vpc_name}-${var.environment}-${count.index}"
       Tier     = "public"
       Role     = "public"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_public_subnet_tags : {}
+    local.eks_public_subnet_tags
   )
 }
 
@@ -48,12 +48,12 @@ resource "aws_subnet" "database" {
   depends_on        = [aws_vpc.vpc]
   tags = merge(
     {
-      Name     = "database-subnet-${var.project}-${var.environment}-${count.index}"
+      Name     = "database-subnet-${var.vpc_name}-${var.environment}-${count.index}"
       Tier     = "private"
       Role     = "database"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -68,12 +68,12 @@ resource "aws_subnet" "svcs" {
   depends_on        = [aws_vpc.vpc]
   tags = merge(
     {
-      Name     = "svcs-subnet-${var.project}-${var.environment}-${count.index}"
+      Name     = "svcs-subnet-${var.vpc_name}-${var.environment}-${count.index}"
       Tier     = "private"
       Role     = "svcs"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -88,12 +88,12 @@ resource "aws_subnet" "cp" {
   depends_on        = [aws_vpc.vpc]
   tags = merge(
     {
-      Name     = "cp-subnet-${var.project}-${var.environment}-${count.index}"
+      Name     = "cp-subnet-${var.vpc_name}-${var.environment}-${count.index}"
       Tier     = "private"
       Role     = "cp"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -108,12 +108,12 @@ resource "aws_subnet" "worker" {
   depends_on        = [aws_vpc.vpc]
   tags = merge(
     {
-      Name     = "worker-subnet-${var.project}-${var.environment}-${count.index}"
+      Name     = "worker-subnet-${var.vpc_name}-${var.environment}-${count.index}"
       Tier     = "private"
       Role     = "worker"
       Resource = "subnet"
     },
-    var.is_fargate ? local.fargate_private_subnet_tags : {}
+    local.eks_private_subnet_tags
   )
 }
 
@@ -130,7 +130,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name     = "public-route-table-${var.project}-${var.environment}"
+    Name     = "public-route-table-${var.vpc_name}-${var.environment}"
     Tier     = "public"
     Role     = "route"
     Resource = "route_table"
@@ -155,7 +155,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name     = "private-route-table-${var.project}-${var.environment}"
+    Name     = "private-route-table-${var.vpc_name}-${var.environment}"
     Tier     = "private"
     Role     = "route"
     Resource = "route_table"
@@ -231,7 +231,7 @@ resource "aws_nat_gateway" "ngw" {
   connectivity_type = "public"
 
   tags = {
-    Name     = "ngw-${var.project}-${var.environment}"
+    Name     = "ngw-${var.vpc_name}-${var.environment}"
     Tier     = "private"
     Role     = "ngw"
     Resource = "ngw"
@@ -242,7 +242,7 @@ resource "aws_eip" "nat" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.igw]
   tags = {
-    Name     = "ngw-${var.project}-${var.environment}"
+    Name     = "ngw-${var.vpc_name}-${var.environment}"
     Tier     = "public"
     Role     = "eip"
     Resource = "eip"
@@ -256,7 +256,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name     = "igw-${var.project}-${var.environment}"
+    Name     = "igw-${var.vpc_name}-${var.environment}"
     Tier     = "public"
     Role     = "igw"
     Resource = "igw"

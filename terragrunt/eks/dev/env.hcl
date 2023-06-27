@@ -2,16 +2,20 @@ locals {
   #------------------------------------------------------
   # GLOBAL VARIABLES
   #------------------------------------------------------
-  project     = "demo-cluster"
-  environment = "dev"
-  tenant      = "DC"
-  aws_region  = "us-east-1"
+  cluster_name = "demo-cluster"
+  project      = "demo-app"
+  environment  = "dev"
+  tenant       = "DC"
+  aws_region   = "us-east-1"
   #------------------------------------------------------
   # VPC VARIABLES
   #------------------------------------------------------
-  base_cidr          = "10.100.0.0/16"
-  availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  az_count           = 3
+  vpc = {
+    name               = "demo-cluster"
+    base_cidr          = "10.100.0.0/16"
+    availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+    az_count           = 3
+  }
 
   #------------------------------------------------------
   # Shared Services [ECR/KMS] VARIABLES
@@ -53,8 +57,9 @@ locals {
   # APP VARIABLES
   #------------------------------------------------------
   app = {
-    framework = "drupal"
-    api_key   = "6464-464adfasd-164afdd-64fdad"
-    hash_key  = "ADFADF465643SAFTWAF"
+    framework             = "python"
+    api_key               = "6464-464adfasd-164afdd-64fdad"
+    hash_key              = "ADFADF465643SAFTWAF"
+    secret_manager_suffix = "v3"
   }
 }

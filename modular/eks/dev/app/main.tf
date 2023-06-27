@@ -6,12 +6,13 @@ module "secretmanager" {
   project     = local.project
   environment = local.environment
   kms_id      = data.terraform_remote_state.shared.outputs.kms_key_id[0]
-  prefix      = "v1"
+  suffix      = "v1"
 
   secret_string = {
-    "user"     = "bkc",
-    "password" = "value"
-    "host"     = "blah"
+    "user"     = "demo-cluster-user",
+    "password" = "demo-cluster-password"
+    "host"     = "demo-cluster-host"
+    "dbname"   = "demo-cluster-dbname"
   }
 }
 
@@ -25,9 +26,10 @@ module "ssm" {
   framework   = local.framework
   kms_id      = data.terraform_remote_state.shared.outputs.kms_key_id[0]
   key_value = {
-    "bkc"  = "www.bkc.com",
-    "bkc1" = "www.bkc1.com",
-    "bkc2" = "www.bkc2.com",
-    "bkc3" = "www.bkc3.com"
+    "name"        = local.project,
+    "environment" = local.environment,
+    "framework"   = local.framework,
+    "api_key"     = "afdadf-adfadsf-aa45adf-adfadsf",
+    "hash_key"    = "adfadfa00i--9i-3q20"
   }
 }

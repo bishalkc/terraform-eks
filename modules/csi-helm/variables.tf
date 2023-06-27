@@ -1,5 +1,5 @@
 ################################################################################
-# LB CONTROLLER
+# SECRETS DRIVER/PROVIDER HELM
 ################################################################################
 variable "project" {
   description = "Project Name"
@@ -9,10 +9,10 @@ variable "environment" {
   description = "Project Environment"
   type        = string
 }
-variable "enable_lb_controller" {
-  description = "Create LB Controller"
-  type        = bool
-  default     = false
+variable "framework" {
+  description = "Application Framework"
+  type        = string
+  default     = "demo"
 }
 variable "aws_oidc_arn" {
   description = "ARN of AWS OIDC"
@@ -32,5 +32,9 @@ variable "eks_cluster_ca_certificate" {
 }
 variable "eks_cluster_endpoint" {
   description = "EKS Cluster Endpoint"
+  type        = string
+}
+variable "secret_manager_arn" {
+  description = "Secret Manager Arn"
   type        = string
 }

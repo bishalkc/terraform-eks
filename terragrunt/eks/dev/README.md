@@ -10,7 +10,7 @@
 - [x] creates vpc
 - [x] creates bastion host
 - [x] creates eks cluster and supporting roles and infra
-- [x] Secret Manager
+- [x] Secret Manager <sup>*<!--- if you are recreating please change the suffix in [env.hcl](./env.hcl) --->
 - [x] SSM Parameter store
 - [x] KMS
 - [x] creates databases <sup>*<!--- optional --->*</sup>
