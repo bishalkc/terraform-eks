@@ -60,6 +60,16 @@ locals {
     framework             = "python"
     api_key               = "6464-464adfasd-164afdd-64fdad"
     hash_key              = "ADFADF465643SAFTWAF"
-    secret_manager_suffix = "v3"
+    secret_manager_suffix = "v4"
+  }
+
+  #------------------------------------------------------
+  # GIT VARIABLES FOR FLUX
+  #------------------------------------------------------
+  git = {
+    path  = "clusters/${local.project}"
+    url   = "git@github.com:bishalkc/demo-flux.git"
+    user  = "bishalkc"
+    token = "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"
   }
 }
