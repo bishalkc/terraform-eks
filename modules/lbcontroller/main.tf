@@ -86,10 +86,26 @@ resource "kubernetes_service_account_v1" "lb_service_account" {
 # # LB CONTROLLER HELM
 # ################################################################################
 
-# resource "helm_release" "secrets_provider_aws" {
-#   name       = "eks"
-#   repository = "https://aws.github.io/eks-charts"
-#   chart      = "aws-load-balancer-controller"
-#   namespace  = "kube-system"
-#   depends_on = [kubernetes_service_account_v1.lb_service_account]
-# }
+resource "helm_release" "alb_load_balancer_controller" {
+  count = var.enable_lb_controller ? 1 : 0
+
+  name       = "eks"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  namespace  = "kube-system"
+
+  set {
+    name  = "serviceAccount.create"
+    value = "false"
+  }
+  set {
+    name  = "serviceAccount.name"
+    value = kubernetes_service_account_v1.lb_service_account[count.index].metadata[0].name
+  }
+  set {
+    name  = "clusterName"
+    value = var.eks_cluster_name
+  }
+
+  depends_on = [kubernetes_service_account_v1.lb_service_account]
+}
