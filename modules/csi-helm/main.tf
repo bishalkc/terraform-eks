@@ -73,7 +73,8 @@ data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
     sid = "SecretManagerAccess"
 
     actions = [
-      "secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret"
     ]
 
     effect = "Allow"
@@ -104,17 +105,16 @@ data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
 
     actions = [
       "ssm:GetParameters",
-      "ssm:GetParametersByPath"
+      "ssm:GetParameter",
     ]
 
     effect = "Allow"
 
     resources = [
-      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.framework}",
+      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.framework}/*",
     ]
   }
 }
-
 resource "aws_iam_policy" "secret_manager_deployment_policy" {
   name   = "policy-secrets-${var.project}-${var.environment}-${var.framework}"
   policy = data.aws_iam_policy_document.secret_manager_deployment_policy_document.json
@@ -127,5 +127,66 @@ resource "aws_iam_role_policy_attachment" "secret_manager_deployment_policy_docu
 
   depends_on = [
     aws_iam_policy.secret_manager_deployment_policy,
+  ]
+}
+
+data "aws_iam_policy_document" "ssm_param_store_deployment_policy_document" {
+  statement {
+    sid = "KMSAccess"
+
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Decrypt"
+    ]
+
+    effect = "Allow"
+
+    resources = ["*"]
+  }
+
+  statement {
+
+    sid = "SSMDescribeAccess"
+
+    actions = [
+      "ssm:DescribeParameters"
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+
+    sid = "SSMAccess"
+
+    actions = [
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.framework}/*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ssm_param_store_deployment_policy" {
+  name   = "policy-ssm-${var.project}-${var.environment}-${var.framework}"
+  policy = data.aws_iam_policy_document.ssm_param_store_deployment_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_param_store_deployment_policy_document" {
+
+  policy_arn = aws_iam_policy.ssm_param_store_deployment_policy.arn
+  role       = aws_iam_role.secrets_role.name
+
+  depends_on = [
+    aws_iam_policy.ssm_param_store_deployment_policy,
   ]
 }
