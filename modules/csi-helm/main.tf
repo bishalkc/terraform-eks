@@ -84,36 +84,6 @@ data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
     ]
   }
 
-  statement {
-
-    sid = "SSMDescribeAccess"
-
-    actions = [
-      "ssm:DescribeParameters"
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "*",
-    ]
-  }
-
-  statement {
-
-    sid = "SSMAccess"
-
-    actions = [
-      "ssm:GetParameters",
-      "ssm:GetParameter",
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.framework}/*",
-    ]
-  }
 }
 resource "aws_iam_policy" "secret_manager_deployment_policy" {
   name   = "policy-secrets-${var.project}-${var.environment}-${var.framework}"
