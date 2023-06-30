@@ -2,11 +2,11 @@
 # SERVICE ACCOUNT ROLE/POLICY
 ################################################################################
 resource "aws_iam_role" "service_role" {
-  name               = "role-secrets-${var.project}-${var.environment}-${var.app_name}-${var.framework}"
+  name               = "role-secrets-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.secret_deployment_policy_document.json
 
   tags = {
-    Name     = "role-secret-manager-${var.project}-${var.app_name}-${var.environment}"
+    Name     = "role-secret-manager-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
 resource "aws_iam_policy" "secret_manager_deployment_policy" {
   count = var.create_secret ? 1 : 0
 
-  name   = "policy-secrets-${var.project}-${var.environment}-${var.app_name}-${var.framework}"
+  name   = "policy-secrets-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
   policy = data.aws_iam_policy_document.secret_manager_deployment_policy_document.json
 }
 
@@ -129,7 +129,7 @@ data "aws_iam_policy_document" "ssm_param_store_deployment_policy_document" {
 resource "aws_iam_policy" "ssm_param_store_deployment_policy" {
   count = var.create_ssm ? 1 : 0
 
-  name   = "policy-ssm-${var.project}-${var.environment}-${var.app_name}-${var.framework}"
+  name   = "policy-ssm-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
   policy = data.aws_iam_policy_document.ssm_param_store_deployment_policy_document.json
 }
 

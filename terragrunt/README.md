@@ -14,6 +14,7 @@
 - [x] Secret Manager
 - [x] SSM Parameter store
 - [x] KMS
+- [x] Multiple applications SSM, SECRETS and SERVICE ROLE
 - [x] creates databases <sup>*<!--- optional --->*</sup>
 
 ### Ensure these are installed and configured
