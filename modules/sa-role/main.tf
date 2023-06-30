@@ -6,10 +6,11 @@ resource "aws_iam_role" "service_role" {
   assume_role_policy = data.aws_iam_policy_document.secret_deployment_policy_document.json
 
   tags = {
-    Name     = "role-secret-manager-${var.project}-${var.environment}"
+    Name     = "role-secret-manager-${var.project}-${var.app_name}-${var.environment}"
     Tier     = "private"
     Role     = "eks"
     Resource = "iam_role"
+    AppName  = var.app_name
   }
 
 }

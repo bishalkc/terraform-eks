@@ -52,35 +52,4 @@ locals {
     volume_size          = 20
     volume_type          = "gp3"
   }
-
-  #------------------------------------------------------
-  # APP VARIABLES
-  #------------------------------------------------------
-  app1 = {
-    framework = "python"
-    api_key   = "6464-464adfasd-164afdd-64fdad"
-    hash_key  = "ADFADF465643SAFTWAF"
-    secret = {
-      create  = true
-      name    = "secrets"
-      version = "v1"
-    }
-    ssm = {
-      create = true
-    }
-  }
-
-  app2 = {
-    framework = "drupal"
-    api_key   = "6464-464adfasd-164afdd-6345345"
-    hash_key  = "DASFADSF3EREWQWER-ADFADF-F465643SAFTWAF"
-    secret = {
-      create  = true
-      name    = "secrets"
-      version = "v1"
-    }
-    ssm = {
-      create = true
-    }
-  }
 }

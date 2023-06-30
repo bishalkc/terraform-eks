@@ -13,6 +13,12 @@ include "env" {
   path   = find_in_parent_folders("env.hcl")
   expose = true
 }
+
+include "app_env" {
+  path   = find_in_parent_folders("app_env.hcl")
+  expose = true
+}
+
 locals {
   app_name = basename("${dirname(get_terragrunt_dir())}")
 }
@@ -26,10 +32,10 @@ inputs = {
   aws_oidc_arn = dependency.eks.outputs.oidc_arn
 
   // PLEASE CHANGE APP1 to appropriate values
-  framework  = include.env.locals.app1.framework
-  create_ssm = include.env.locals.app1.ssm.create
+  framework  = include.app_env.locals.framework
+  create_ssm = include.app_env.locals.ssm.create
 
-  secret_manager_arn = dependency.secretmanager.secret_manager_arn[0]
+  secret_manager_arn = dependency.secretmanager.outputs.secret_manager_arn[0]
 }
 
 dependency "secretmanager" {
@@ -41,7 +47,8 @@ dependency "secretmanager" {
 }
 
 dependency "ssm" {
-  config_path  = "../ssm"
+  config_path = "../ssm"
+
   skip_outputs = true
 }
 
