@@ -56,19 +56,31 @@ locals {
   #------------------------------------------------------
   # APP VARIABLES
   #------------------------------------------------------
-  app = {
-    framework             = "python"
-    api_key               = "6464-464adfasd-164afdd-64fdad"
-    hash_key              = "ADFADF465643SAFTWAF"
-    secret_manager_suffix = "v5"
+  app1 = {
+    framework = "python"
+    api_key   = "6464-464adfasd-164afdd-64fdad"
+    hash_key  = "ADFADF465643SAFTWAF"
+    secret = {
+      create  = true
+      name    = "secrets"
+      version = "v1"
+    }
+    ssm = {
+      create = true
+    }
   }
 
-  #------------------------------------------------------
-  # GIT VARIABLES FOR FLUX
-  #------------------------------------------------------
-  git = {
-    path = "clusters/${local.cluster_name}-${local.environment}"
-    url  = "git@github.com:bishalkc/demo-flux.git"
-    user = "bishalkc"
+  app2 = {
+    framework = "drupal"
+    api_key   = "6464-464adfasd-164afdd-6345345"
+    hash_key  = "DASFADSF3EREWQWER-ADFADF-F465643SAFTWAF"
+    secret = {
+      create  = true
+      name    = "secrets"
+      version = "v1"
+    }
+    ssm = {
+      create = true
+    }
   }
 }

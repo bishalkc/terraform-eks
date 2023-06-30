@@ -14,6 +14,11 @@ variable "framework" {
   type        = string
   default     = "demo"
 }
+variable "app_name" {
+  description = "App Name"
+  type        = string
+  default     = "app1"
+}
 variable "description" {
   description = "The description of the parameter."
   default     = "Parameter Stores"
@@ -24,13 +29,11 @@ variable "type" {
   default     = "SecureString"
   type        = string
 }
-
 variable "tier" {
   description = "The type of the parameter. Valid types are String, StringList and SecureString"
   default     = "Standard"
   type        = string
 }
-
 variable "data_type" {
   description = "The data_type of the parameter. Valid values: text and aws:ec2:image for AMI format, see the Native parameter support for Amazon Machine Image IDs ( https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-ec2-aliases.html )"
   default     = "text"

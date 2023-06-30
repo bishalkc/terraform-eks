@@ -1,6 +1,7 @@
 ################################################################################
-# SECRET MANAGER VARIABLES
+# SECRETS/PARAMETER STOR ROLE POLICY
 ################################################################################
+
 variable "project" {
   description = "Project Name"
   type        = string
@@ -19,24 +20,25 @@ variable "app_name" {
   type        = string
   default     = "app1"
 }
-variable "kms_id" {
-  description = "KMS ID for encryption"
-  type        = string
-}
-variable "secret_string" {
-  description = " Secrets to populate"
-  type        = map(string)
-}
-variable "secret_name" {
-  description = "Secret Manager name"
-  type        = string
-}
-variable "secret_version" {
-  description = "Adding version as suffix to Secret Manager name"
-  type        = string
-}
 variable "create_secret" {
-  description = "Creates Secret Manager for storing Database"
+  description = "Creates Secret Manager for storing app secrets"
   type        = bool
   default     = true
+}
+variable "create_ssm" {
+  description = "Creates Parameter Store for storing app values"
+  type        = bool
+  default     = true
+}
+variable "aws_oidc_arn" {
+  description = "ARN of AWS OIDC"
+  type        = string
+}
+variable "aws_oidc_url" {
+  description = "URL of AWS OIDC"
+  type        = string
+}
+variable "secret_manager_arn" {
+  description = "Sercret Manager ARN"
+  type        = string
 }
