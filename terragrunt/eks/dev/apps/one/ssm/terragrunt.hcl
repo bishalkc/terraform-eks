@@ -42,7 +42,7 @@ inputs = {
 }
 
 dependency "kms" {
-  config_path = "../../shared/kms"
+  config_path = "../../../shared/kms"
   mock_outputs = {
     kms_key_id = ["1234abcd-12ab-34cd-56ef-123456789011"]
   }
