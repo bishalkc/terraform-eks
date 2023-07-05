@@ -8,7 +8,7 @@ locals {
   secret = {
     create  = true
     name    = "secrets"
-    version = "v1"
+    version = "v2"
   }
   ssm = {
     create = true

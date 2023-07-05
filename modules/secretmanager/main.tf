@@ -6,7 +6,7 @@
 resource "aws_secretsmanager_secret" "secrets" {
   count = var.create_secret ? 1 : 0
 
-  name                    = "${lower(var.project)}/${lower(var.environment)}-${lower(var.app_name)}-${lower(var.framework)}-${lower(var.secret_name)}-${lower(var.secret_version)}"
+  name                    = "${lower(var.project)}/${lower(var.environment)}/${lower(var.app_name)}/${lower(var.framework)}/${lower(var.secret_name)}-${lower(var.secret_version)}"
   kms_key_id              = var.kms_id
   recovery_window_in_days = 7
   # rotation_rules {
