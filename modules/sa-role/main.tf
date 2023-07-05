@@ -73,7 +73,7 @@ resource "aws_iam_role_policy_attachment" "secret_manager_deployment_policy_docu
   count = var.create_secret ? 1 : 0
 
   policy_arn = aws_iam_policy.secret_manager_deployment_policy[count.index].arn
-  role       = aws_iam_role.service_role.arn
+  role       = aws_iam_role.service_role.name
 
   depends_on = [
     aws_iam_policy.secret_manager_deployment_policy,
@@ -137,7 +137,7 @@ resource "aws_iam_role_policy_attachment" "ssm_param_store_deployment_policy_doc
   count = var.create_ssm ? 1 : 0
 
   policy_arn = aws_iam_policy.ssm_param_store_deployment_policy[count.index].arn
-  role       = aws_iam_role.service_role.arn
+  role       = aws_iam_role.service_role.name
 
   depends_on = [
     aws_iam_policy.ssm_param_store_deployment_policy,
