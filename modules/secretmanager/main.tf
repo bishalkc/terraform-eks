@@ -3,10 +3,10 @@
 ################################################################################
 
 ## DATABSE SECRET AND KEYS
-resource "aws_secretsmanager_secret" "database" {
-  count = var.create_secret_database ? 1 : 0
+resource "aws_secretsmanager_secret" "secrets" {
+  count = var.create_secret ? 1 : 0
 
-  name                    = "${lower(var.project)}/${lower(var.environment)}/${lower(var.framework)}/database-${var.suffix}"
+  name                    = "${lower(var.project)}/${lower(var.environment)}/${lower(var.app_name)}/${lower(var.framework)}/${lower(var.secret_name)}-${lower(var.secret_version)}"
   kms_key_id              = var.kms_id
   recovery_window_in_days = 7
   # rotation_rules {
@@ -14,33 +14,18 @@ resource "aws_secretsmanager_secret" "database" {
   # }
 
   tags = {
-    Name     = "secret-manager-${var.project}-${var.environment}-${lower(var.framework)}"
+    Name     = "secret-manager-${var.project}-${var.environment}-${lower(var.app_name)}-${lower(var.framework)}"
     Tier     = "private"
     Role     = "eks"
     Resource = "secret_manager"
+    AppName  = var.app_name
   }
 }
 
 resource "aws_secretsmanager_secret_version" "secret_string" {
-  count = var.create_secret_database ? 1 : 0
+  count = var.create_secret ? 1 : 0
 
-  secret_id     = aws_secretsmanager_secret.database[count.index].id
+  secret_id     = aws_secretsmanager_secret.secrets[count.index].id
   secret_string = jsonencode(var.secret_string)
-  depends_on    = [aws_secretsmanager_secret.database]
-}
-
-## APP SECRET AND KEYS
-resource "aws_secretsmanager_secret" "app" {
-  count = var.create_secret_app ? 1 : 0
-
-  name                    = "${lower(var.project)}/${lower(var.environment)}/${lower(var.framework)}/app-${var.suffix}"
-  kms_key_id              = var.kms_id
-  recovery_window_in_days = 7
-
-  tags = {
-    Name     = "secret-manager-${var.project}-${var.environment}-${lower(var.framework)}"
-    Tier     = "private"
-    Role     = "eks"
-    Resource = "secret_manager"
-  }
+  depends_on    = [aws_secretsmanager_secret.secrets]
 }

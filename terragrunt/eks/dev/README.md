@@ -20,6 +20,8 @@
 * [Terragrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
 * [Precommit](https://pre-commit.com/#install)
 * [AWS Cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
+* [Flux CD](https://fluxcd.io/flux/) ### Please refer here for [flux](./flux.md) bootstrapping
+* [Helm Chart](https://helm.sh/docs/intro/install/)
 
 ### *We are using terragrunt to build the infrastructure*
 *NOTE:* Learn about [Terragrunt](https://terragrunt.gruntwork.io/)

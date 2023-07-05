@@ -1,29 +1,20 @@
 ################################################################################
-# SECRETS DRIVER/PROVIDER HELM
+# SERVICE ACCOUNT ROLE/POLICY
 ################################################################################
-resource "helm_release" "secret_store_csi_driver" {
-  name       = "secret-store-csi-driver"
-  repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
-  chart      = "secrets-store-csi-driver"
-  namespace  = "kube-system"
+resource "aws_iam_role" "service_role" {
+  name               = "role-secrets-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
+  assume_role_policy = data.aws_iam_policy_document.secret_deployment_policy_document.json
 
-  set {
-    name  = "syncSecret.enabled"
-    value = "true"
+  tags = {
+    Name     = "role-secret-manager-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
+    Tier     = "private"
+    Role     = "eks"
+    Resource = "iam_role"
+    AppName  = var.app_name
   }
 
 }
-resource "helm_release" "secrets_provider_aws" {
-  name       = "secrets-provider-aws"
-  repository = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
-  chart      = "secrets-store-csi-driver-provider-aws"
-  namespace  = "kube-system"
-  depends_on = [helm_release.secret_store_csi_driver]
-}
 
-################################################################################
-# SERVICE ACCOUNT ROLE/POLICY
-################################################################################
 data "aws_iam_policy_document" "secret_deployment_policy_document" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -41,20 +32,6 @@ data "aws_iam_policy_document" "secret_deployment_policy_document" {
     }
   }
 }
-
-resource "aws_iam_role" "secrets_role" {
-  name               = "role-secrets-${var.project}-${var.environment}-${var.framework}"
-  assume_role_policy = data.aws_iam_policy_document.secret_deployment_policy_document.json
-
-  tags = {
-    Name     = "role-secret-manager-${var.project}-${var.environment}"
-    Tier     = "private"
-    Role     = "eks"
-    Resource = "iam_role"
-  }
-
-}
-
 data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
   statement {
     sid = "KMSAccess"
@@ -84,46 +61,19 @@ data "aws_iam_policy_document" "secret_manager_deployment_policy_document" {
     ]
   }
 
-  statement {
-
-    sid = "SSMDescribeAccess"
-
-    actions = [
-      "ssm:DescribeParameters"
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "*",
-    ]
-  }
-
-  statement {
-
-    sid = "SSMAccess"
-
-    actions = [
-      "ssm:GetParameters",
-      "ssm:GetParameter",
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.framework}/*",
-    ]
-  }
 }
 resource "aws_iam_policy" "secret_manager_deployment_policy" {
-  name   = "policy-secrets-${var.project}-${var.environment}-${var.framework}"
+  count = var.create_secret ? 1 : 0
+
+  name   = "policy-secrets-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
   policy = data.aws_iam_policy_document.secret_manager_deployment_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "secret_manager_deployment_policy_document" {
+  count = var.create_secret ? 1 : 0
 
-  policy_arn = aws_iam_policy.secret_manager_deployment_policy.arn
-  role       = aws_iam_role.secrets_role.name
+  policy_arn = aws_iam_policy.secret_manager_deployment_policy[count.index].arn
+  role       = aws_iam_role.service_role.name
 
   depends_on = [
     aws_iam_policy.secret_manager_deployment_policy,
@@ -171,20 +121,23 @@ data "aws_iam_policy_document" "ssm_param_store_deployment_policy_document" {
     effect = "Allow"
 
     resources = [
-      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.framework}/*",
+      "arn:aws:ssm:us-east-1:${local.account_number}:parameter/${var.project}/${var.environment}/${var.app_name}/${var.framework}/*",
     ]
   }
 }
 
 resource "aws_iam_policy" "ssm_param_store_deployment_policy" {
-  name   = "policy-ssm-${var.project}-${var.environment}-${var.framework}"
+  count = var.create_ssm ? 1 : 0
+
+  name   = "policy-ssm-${var.project}-${var.app_name}-${var.framework}-${var.environment}"
   policy = data.aws_iam_policy_document.ssm_param_store_deployment_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_param_store_deployment_policy_document" {
+  count = var.create_ssm ? 1 : 0
 
-  policy_arn = aws_iam_policy.ssm_param_store_deployment_policy.arn
-  role       = aws_iam_role.secrets_role.name
+  policy_arn = aws_iam_policy.ssm_param_store_deployment_policy[count.index].arn
+  role       = aws_iam_role.service_role.name
 
   depends_on = [
     aws_iam_policy.ssm_param_store_deployment_policy,
