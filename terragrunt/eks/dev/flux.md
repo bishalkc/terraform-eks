@@ -32,7 +32,7 @@ flux create secret git git-app-https-credentials \
 ### Create GIT Credentials for FLUX REPO
 ```shell
 flux create secret git demo-flux-https-credentials \
-    --url=https://github.com/bishalkc/demo-flux \
+    --url=$GITHUB_FLUX_REPO \
     --username=$GITHUB_USER \
     --password=$GITHUB_TOKEN
 ```
