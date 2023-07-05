@@ -29,15 +29,14 @@ inputs = {
   app_name    = basename("${dirname(get_terragrunt_dir())}")
 
   // PLEASE CHANGE APP1 to appropriate values
-  framework = include.env.locals.app1.framework // PLEASE CHANGE APP1 to appropriate values
+  framework = include.app_env.locals.framework // PLEASE CHANGE APP1 to appropriate values
 
   key_value = {
-    "name"           = include.env.locals.project,
-    "environment"    = include.env.locals.environment,
-    "framework"      = include.app_env.locals.framework
-    "api_key"        = include.app_env.locals.api_key
-    "hash_key"       = include.app_env.locals.hash_key
-    "api_secret_key" = "placeholder"
+    "name"        = include.env.locals.project,
+    "environment" = include.env.locals.environment,
+    "framework"   = include.app_env.locals.framework
+    "api_key"     = include.app_env.locals.api_key
+    "hash_key"    = include.app_env.locals.hash_key
   }
 }
 
