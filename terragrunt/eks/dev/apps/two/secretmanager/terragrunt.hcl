@@ -33,10 +33,11 @@ inputs = {
   create_secret  = include.app_env.locals.secret.create
 
   secret_string = {
-    "user"     = "demo-cluster-user",
-    "password" = "demo-cluster-password"
-    "host"     = "demo-cluster-host"
-    "dbname"   = "demo-cluster-dbname"
+    "user"     = "demo-app-two-cluster-user",
+    "password" = "demo-app-two-cluster-password"
+    "host"     = "demo-app-two-cluster-host"
+    "dbname"   = "demo-app-two-cluster-dbname"
+    "dbport"   = "demo-app-two-cluster-dbport"
   }
 }
 
